@@ -55,14 +55,14 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 ## Phase 5: Institutional Four-Discernment Workbench
 
-- [ ] Show case summary.
-- [ ] Show evidence map.
-- [ ] Show 辨善恶.
-- [ ] Show 辨真伪.
-- [ ] Show 辨大小.
-- [ ] Show 辨远近.
-- [ ] Show human review checklist.
-- [ ] Provide decision buttons: request materials, reject, approve display, offline follow-up.
+- [x] Show case summary.
+- [x] Show evidence map.
+- [x] Show 辨善恶.
+- [x] Show 辨真伪.
+- [x] Show 辨大小.
+- [x] Show 辨远近.
+- [x] Show human review checklist.
+- [x] Provide decision buttons: request materials, reject, approve display, offline follow-up.
 
 ## Phase 6: Donation Intention Management
 

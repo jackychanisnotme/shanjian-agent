@@ -499,6 +499,79 @@ h3 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.case-summary,
+.evidence-map,
+.discernment-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.case-summary {
+  align-items: center;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.7fr);
+}
+
+.evidence-map {
+  display: grid;
+  gap: 14px;
+}
+
+.evidence-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.evidence-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 6px;
+  min-height: 112px;
+  padding: 12px;
+}
+
+.evidence-item span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.status-missing,
+.status-conflicting {
+  border-color: rgba(159, 63, 52, 0.35);
+}
+
+.status-needs_manual_check {
+  border-color: rgba(138, 100, 29, 0.38);
+}
+
+.discernment-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.discernment-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.pending-copy {
+  color: var(--muted);
+  margin: 0;
+}
+
+.decision-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 @media (max-width: 720px) {
   .app-root {
     padding: 0 16px 36px;
@@ -526,6 +599,9 @@ h3 {
   }
 
   .form-grid,
+  .case-summary,
+  .discernment-grid,
+  .evidence-list,
   .metric-strip,
   .home-grid,
   .detail-layout,

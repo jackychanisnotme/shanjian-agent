@@ -1175,7 +1175,7 @@ git commit -m "feat: add aid application intake"
 - Modify: `shanjian-agent/src/App.tsx`
 - Modify: `shanjian-agent/tests/app-flow.test.tsx`
 
-- [ ] **Step 1: Add workbench test**
+- [x] **Step 1: Add workbench test**
 
 Add flow:
 
@@ -1189,7 +1189,7 @@ await user.click(screen.getByRole('button', { name: /运行四辨审核/ }));
 expect(screen.getByText(/人工核对最新发票/)).toBeInTheDocument();
 ```
 
-- [ ] **Step 2: Implement component**
+- [x] **Step 2: Implement component**
 
 Component requirements:
 
@@ -1205,7 +1205,7 @@ Component requirements:
 - Decision buttons: `要求补充材料`, `拒绝`, `批准展示`, `线下跟进`.
 - `批准展示` should show text `已生成脱敏项目卡片`.
 
-- [ ] **Step 3: Verify and commit**
+- [x] **Step 3: Verify and commit**
 
 Run:
 

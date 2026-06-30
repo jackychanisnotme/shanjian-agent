@@ -29,6 +29,14 @@ describe('Shanjian Agent flow', () => {
 
     await user.click(screen.getByRole('button', { name: /机构四辨工作台/ }));
     expect(screen.getByRole('heading', { name: /机构四辨工作台/ })).toBeInTheDocument();
+    expect(screen.getByText(/辨善恶/)).toBeInTheDocument();
+    expect(screen.getByText(/辨真伪/)).toBeInTheDocument();
+    expect(screen.getByText(/辨大小/)).toBeInTheDocument();
+    expect(screen.getByText(/辨远近/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /运行四辨审核/ }));
+    expect(screen.getByText(/人工核对最新发票/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /批准展示/ }));
+    expect(screen.getByText(/已生成脱敏项目卡片/)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /捐助意向管理/ }));
     expect(screen.getByRole('heading', { name: /捐助意向管理/ })).toBeInTheDocument();

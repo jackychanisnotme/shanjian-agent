@@ -4,6 +4,7 @@ import type { ViewKey } from './app/navigation';
 import { AppShell } from './components/AppShell';
 import { AidApplicationEntry } from './components/AidApplicationEntry';
 import { ComplianceNotice } from './components/ComplianceNotice';
+import { FourDiscernmentWorkbench } from './components/FourDiscernmentWorkbench';
 import { MetricStrip } from './components/MetricStrip';
 import { ProjectCard } from './components/ProjectCard';
 import { ProjectDetail } from './components/ProjectDetail';
@@ -66,10 +67,10 @@ export default function App() {
       )}
 
       {view === 'workbench' && (
-        <section className="view-panel" aria-labelledby="workbench-title">
-          <h1 id="workbench-title">机构四辨工作台</h1>
-          <p>AI 仅生成证据、风险和人工复核清单。</p>
-        </section>
+        <FourDiscernmentWorkbench
+          application={state.applications[0]}
+          onDecision={(latestDecision) => setState((current) => ({ ...current, latestDecision }))}
+        />
       )}
 
       {view === 'intentions' && (
