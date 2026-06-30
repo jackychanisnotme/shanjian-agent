@@ -16,12 +16,16 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 ## Phase 1: Domain And Agent Core
 
 - [ ] Define `AidApplication`, `PublicProject`, `DonationIntention`, `FourDiscernmentReport`.
+- [ ] Define `ResourceNeed`, `HelpCategory`, `ProjectQuestion`, `ProjectAnswer`.
 - [ ] Seed fictional acute leukemia child aid case.
 - [ ] Seed three public project cards.
 - [ ] Implement deterministic intake structuring agent.
 - [ ] Implement deterministic four-discernment agent.
 - [ ] Implement public project generation agent.
+- [ ] Implement AI问项目 agent.
 - [ ] Implement donation-intention classification agent.
+- [ ] Support money/material/service donation categories.
+- [ ] Capture beneficiary-stated real needs and low-barrier narrative input.
 - [ ] Implement feedback draft generator.
 
 ## Phase 2: App Shell And Navigation
@@ -38,6 +42,7 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 - [ ] Show project metrics.
 - [ ] Show de-identified project cards.
 - [ ] Show project detail and progress timeline.
+- [ ] Show AI问项目 questions and answers.
 - [ ] Show `我要帮助` as intention registration, not payment.
 
 ## Phase 4: Aid Application Entry
@@ -63,8 +68,10 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 - [ ] Show existing help intentions.
 - [ ] Show help-intention form.
-- [ ] Help types include funding intention, medical resource, drug resource, volunteer, propagation, corporate support.
+- [ ] Help categories include money, materials, services.
+- [ ] Help types include funding intention, medical resource, drug resource, nutrition, accommodation, transportation, volunteer escort, policy consultation, psychological support, propagation, corporate support.
 - [ ] AI classifies intention.
+- [ ] AI matches to beneficiary-stated real needs.
 - [ ] AI generates institution follow-up script.
 - [ ] UI states platform does not collect money.
 
@@ -72,6 +79,7 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 - [ ] Generate transparent feedback draft.
 - [ ] Feedback says it needs institution review.
+- [ ] README explains AI问项目 and money/material/service matching.
 - [ ] README documents compliance boundary.
 - [ ] DEMO.md explains 3-minute pitch flow.
 - [ ] Run `npm test`.

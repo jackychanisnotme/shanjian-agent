@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a polished, demo-ready web MVP for 善见 Agent: a serious-illness aid project system with public project display, aid application intake, institutional four-discernment review, and donation-intention management.
+**Goal:** Build a polished, demo-ready web MVP for 善见 Agent: a serious-illness aid project system that turns aid applications, institutional review, public questions, money/material/service help intentions and feedback into a verifiable “善意精准抵达” workflow.
 
 **Architecture:** Create a standalone Vite + React + TypeScript app under `shanjian-agent/`. Keep it frontend-only for the hackathon demo: React state and local deterministic “agent” functions simulate AI workflows, with clean interfaces so real LLM APIs can be swapped in later. The app uses in-memory demo data plus `localStorage` persistence so the full demo loop works without a backend.
 
@@ -60,6 +60,7 @@ shanjian-agent/
       MetricStrip.tsx
       ProjectCard.tsx
       ProjectDetail.tsx
+      ProjectQuestionPanel.tsx
       AidApplicationEntry.tsx
       FourDiscernmentWorkbench.tsx
       DonationIntentionManagement.tsx
@@ -74,7 +75,7 @@ File responsibilities:
 
 - `domain/types.ts`: shared domain models only.
 - `domain/demoData.ts`: fictional acute leukemia aid case and seeded public projects.
-- `domain/agents.ts`: deterministic AI-like functions for intake, four-discernment, privacy redaction, public project generation, donation-intention classification and feedback drafting.
+- `domain/agents.ts`: deterministic AI-like functions for intake, four-discernment, privacy redaction, public project generation, AI问项目, money/material/service donation-intention classification, real-need matching and feedback drafting.
 - `app/demoStore.ts`: state transitions for demo flow.
 - `components/*`: focused UI components, each with one visible responsibility.
 - `styles/global.css`: restrained healthcare/public-service UI; no one-note purple/blue-gradient theme, no decorative orb backgrounds.
@@ -273,9 +274,35 @@ export type HelpType =
   | 'funding_intention'
   | 'medical_resource'
   | 'drug_resource'
+  | 'nutrition'
+  | 'accommodation'
+  | 'transportation'
   | 'volunteer'
+  | 'policy_consultation'
+  | 'psychological_support'
   | 'propagation'
   | 'corporate_support';
+
+export type HelpCategory = 'money' | 'materials' | 'services';
+
+export type NeedType =
+  | 'treatment_cost'
+  | 'medicine'
+  | 'nutrition'
+  | 'accommodation'
+  | 'transportation'
+  | 'escort'
+  | 'policy_consultation'
+  | 'psychological_support'
+  | 'propagation';
+
+export interface ResourceNeed {
+  id: string;
+  type: NeedType;
+  label: string;
+  description: string;
+  priority: 'low' | 'medium' | 'high';
+}
 
 export interface AidApplication {
   id: string;
@@ -289,6 +316,7 @@ export interface AidApplication {
   reimbursementEstimate: number;
   remainingGap: number;
   familyBurden: string;
+  requestedNeeds: ResourceNeed[];
   materialNotes: string[];
   rawNarrative: string;
   consentForInstitutionReview: boolean;
@@ -332,6 +360,7 @@ export interface PublicProject {
   verifiedNeed: string;
   resourceGap: number;
   matchedIntentions: number;
+  needs: ResourceNeed[];
   progress: string[];
   story: string;
 }
@@ -339,6 +368,7 @@ export interface PublicProject {
 export interface DonationIntention {
   id: string;
   projectId: string;
+  helpCategory: HelpCategory;
   helpType: HelpType;
   amountOrResource: string;
   city: string;
@@ -346,6 +376,17 @@ export interface DonationIntention {
   receiptNeed: boolean;
   message: string;
   status: 'new' | 'matched' | 'contacted' | 'closed';
+}
+
+export interface ProjectQuestion {
+  id: string;
+  question: string;
+}
+
+export interface ProjectAnswer {
+  question: string;
+  answer: string;
+  sourceLabels: string[];
 }
 ```
 
@@ -368,6 +409,29 @@ export const demoAidApplication: AidApplication = {
   reimbursementEstimate: 92000,
   remainingGap: 100000,
   familyBurden: '家庭主要收入来自父亲零工，母亲陪护停工，已有亲友借款。',
+  requestedNeeds: [
+    {
+      id: 'need-treatment-cost',
+      type: 'treatment_cost',
+      label: '治疗费用缺口',
+      description: '巩固治疗阶段仍有约10万元费用缺口，需要机构核验后对接资金支持意向。',
+      priority: 'high',
+    },
+    {
+      id: 'need-transportation',
+      type: 'transportation',
+      label: '复诊交通协助',
+      description: '家庭异地就医，后续复诊需要交通和陪同安排。',
+      priority: 'medium',
+    },
+    {
+      id: 'need-policy-consultation',
+      type: 'policy_consultation',
+      label: '医保/救助政策咨询',
+      description: '报销状态不清，需要志愿者或机构工作人员协助梳理政策路径。',
+      priority: 'high',
+    },
+  ],
   materialNotes: [
     '模拟诊断摘要已提供',
     '住院费用清单已提供',
@@ -392,6 +456,22 @@ export const seedPublicProjects: PublicProject[] = [
     verifiedNeed: '巩固治疗阶段费用缺口',
     resourceGap: 100000,
     matchedIntentions: 6,
+    needs: [
+      {
+        id: 'need-treatment-cost',
+        type: 'treatment_cost',
+        label: '治疗费用缺口',
+        description: '巩固治疗阶段费用缺口，需机构核验后对接资金支持意向。',
+        priority: 'high',
+      },
+      {
+        id: 'need-policy-consultation',
+        type: 'policy_consultation',
+        label: '医保/救助政策咨询',
+        description: '协助家属确认医保和属地救助报销路径。',
+        priority: 'high',
+      },
+    ],
     progress: ['机构已完成初审', '等待补充最新发票', '已匹配2名本地志愿者'],
     story:
       '患儿A正在接受规范治疗，家庭已完成前期自筹和医保申请。项目当前重点是补齐费用证明并匹配后续治疗阶段的社会支持。',
@@ -405,6 +485,15 @@ export const seedPublicProjects: PublicProject[] = [
     verifiedNeed: '移植前支持治疗与陪护资源',
     resourceGap: 68000,
     matchedIntentions: 3,
+    needs: [
+      {
+        id: 'need-drug-resource',
+        type: 'medicine',
+        label: '药品资源信息',
+        description: '需要机构确认可合规对接的药品资源信息。',
+        priority: 'medium',
+      },
+    ],
     progress: ['医院社工已复核病情摘要', '药品资源意向待确认'],
     story: '患者B处于移植前准备阶段，机构正在协调治疗费用缺口和陪护支持。',
   },
@@ -417,6 +506,15 @@ export const seedPublicProjects: PublicProject[] = [
     verifiedNeed: '阶段性药品与复查交通支持',
     resourceGap: 0,
     matchedIntentions: 9,
+    needs: [
+      {
+        id: 'need-follow-up-transportation',
+        type: 'transportation',
+        label: '复查交通提醒',
+        description: '阶段性援助完成后继续记录复查交通需求。',
+        priority: 'low',
+      },
+    ],
     progress: ['阶段援助已完成', '反馈报告已生成', '后续复查提醒已登记'],
     story: '患儿C已完成本阶段救助，机构已生成脱敏反馈报告并继续跟进复查。',
   },
@@ -453,6 +551,7 @@ Append to `src/domain/agents.test.ts`:
 
 ```ts
 import {
+  answerProjectQuestion,
   classifyDonationIntention,
   generateFeedbackDraft,
   generatePublicProject,
@@ -487,6 +586,7 @@ describe('deterministic agents', () => {
     const result = classifyDonationIntention({
       id: 'intent-1',
       projectId: 'project-child-a',
+      helpCategory: 'money',
       helpType: 'funding_intention',
       amountOrResource: '愿意定向支持5000元，由机构联系确认',
       city: '深圳',
@@ -496,7 +596,16 @@ describe('deterministic agents', () => {
       status: 'new',
     });
     expect(result.priority).toBe('high');
+    expect(result.categoryLabel).toBe('钱');
+    expect(result.matchingRationale).toContain('治疗费用缺口');
     expect(result.followUpScript).toContain('不在平台内收款');
+  });
+
+  it('answers public project questions from verified facts', () => {
+    const answer = answerProjectQuestion(seedPublicProjects[0], '这个项目目前最需要什么？');
+    expect(answer.answer).toContain('治疗费用缺口');
+    expect(answer.answer).toContain('医保/救助政策咨询');
+    expect(answer.sourceLabels).toContain('项目当前需求');
   });
 
   it('drafts transparent feedback', () => {
@@ -522,7 +631,7 @@ Expected: FAIL because `agents.ts` does not exist.
 Create `src/domain/agents.ts`:
 
 ```ts
-import type { AidApplication, DonationIntention, FourDiscernmentReport, MissingMaterial, PublicProject } from './types';
+import type { AidApplication, DonationIntention, FourDiscernmentReport, MissingMaterial, ProjectAnswer, PublicProject } from './types';
 
 export function structureAidApplication(application: AidApplication) {
   const missingMaterials: MissingMaterial[] = [
@@ -554,6 +663,7 @@ export function structureAidApplication(application: AidApplication) {
       reimbursementEstimate: application.reimbursementEstimate,
       remainingGap: application.remainingGap,
     },
+    requestedNeeds: application.requestedNeeds,
     missingMaterials,
   };
 }
@@ -618,6 +728,7 @@ export function generatePublicProject(application: AidApplication): PublicProjec
     verifiedNeed: '连续治疗阶段费用缺口与陪护支持',
     resourceGap: application.remainingGap,
     matchedIntentions: 0,
+    needs: application.requestedNeeds,
     progress: ['机构完成初步材料整理', '等待补充最新发票和报销确认', '公开展示已完成脱敏处理'],
     story:
       `${application.patientAlias}正在接受规范治疗，家庭已承担前期费用并申请医保报销。` +
@@ -631,12 +742,48 @@ export function classifyDonationIntention(intention: DonationIntention) {
     intention.helpType === 'corporate_support' ||
     /[5-9]\d{3,}|[1-9]\d{4,}/.test(intention.amountOrResource);
 
+  const categoryLabel = intention.helpCategory === 'money' ? '钱' : intention.helpCategory === 'materials' ? '物' : '服';
+  const matchingRationale =
+    intention.helpCategory === 'money'
+      ? '与项目的治疗费用缺口匹配，需由机构线下确认收款路径。'
+      : intention.helpCategory === 'materials'
+        ? '与项目的药品、营养或住宿交通等物资需求匹配，需确认合规交付方式。'
+        : '与项目的陪诊、政策咨询、心理支持或传播等服务需求匹配，需由机构安排后续协作。';
+
   return {
     priority: isHighValue ? 'high' : 'normal',
-    tags: [intention.helpType, intention.city, intention.receiptNeed ? 'needs_receipt_info' : 'no_receipt_need'],
+    categoryLabel,
+    matchingRationale,
+    tags: [categoryLabel, intention.helpType, intention.city, intention.receiptNeed ? 'needs_receipt_info' : 'no_receipt_need'],
     followUpScript:
       `您好，感谢您对该救助项目表达帮助意向。平台仅登记意向、不在平台内收款，` +
       `后续将由有资质机构工作人员与您确认支持方式、票据需求和项目反馈。`,
+  };
+}
+
+export function answerProjectQuestion(project: PublicProject, question: string): ProjectAnswer {
+  const needsText = project.needs.map((need) => `${need.label}：${need.description}`).join('；');
+
+  if (question.includes('为什么') || question.includes('收款') || question.includes('付款')) {
+    return {
+      question,
+      answer: '平台只登记帮助意向，不在平台内收款。真实募捐主体、资金账户、票据和拨付由有资质机构负责。',
+      sourceLabels: ['合规边界', '机构复核'],
+    };
+  }
+
+  if (question.includes('需要') || question.includes('缺')) {
+    return {
+      question,
+      answer: `当前最需要的是：${needsText}。这些需求会进入机构后台，由工作人员匹配钱、物、服三类社会支持。`,
+      sourceLabels: ['项目当前需求', '机构工作台'],
+    };
+  }
+
+  return {
+    question,
+    answer: `该项目处于${project.status}状态，已记录${project.progress.length}条阶段进展。AI回答只基于脱敏项目事实，不能替代机构判断。`,
+    sourceLabels: ['项目进展', 'AI辅助说明'],
   };
 }
 
@@ -768,6 +915,7 @@ export const initialDemoState: DemoState = {
     {
       id: 'intent-seed-1',
       projectId: 'project-child-a',
+      helpCategory: 'money',
       helpType: 'funding_intention',
       amountOrResource: '愿意支持5000元，由机构联系确认',
       city: '深圳',
@@ -883,6 +1031,7 @@ git commit -m "feat: add app navigation and demo store"
 - Create: `shanjian-agent/src/components/MetricStrip.tsx`
 - Create: `shanjian-agent/src/components/ProjectCard.tsx`
 - Create: `shanjian-agent/src/components/ProjectDetail.tsx`
+- Create: `shanjian-agent/src/components/ProjectQuestionPanel.tsx`
 - Modify: `shanjian-agent/src/App.tsx`
 - Modify: `shanjian-agent/src/styles/global.css`
 - Modify: `shanjian-agent/tests/app-flow.test.tsx`
@@ -894,6 +1043,8 @@ Add assertions:
 ```tsx
 expect(screen.getByText(/不自营募捐/)).toBeInTheDocument();
 expect(screen.getByText(/患儿A/)).toBeInTheDocument();
+expect(screen.getByText(/AI问项目/)).toBeInTheDocument();
+expect(screen.getByRole('button', { name: /这个项目目前最需要什么/ })).toBeInTheDocument();
 expect(screen.getByRole('button', { name: /我要帮助/ })).toBeInTheDocument();
 ```
 
@@ -915,7 +1066,8 @@ Implement components with these visible requirements:
 - `ComplianceNotice`: text must include `不自营募捐、不代收善款、不建立资金池`.
 - `MetricStrip`: shows simulated totals: `3个展示项目`, `18条捐助意向`, `7份反馈草稿`.
 - `ProjectCard`: shows patient alias, disease, progress, resource gap and `我要帮助` button.
-- `ProjectDetail`: shows evidence summary, progress timeline and feedback preview.
+- `ProjectDetail`: shows evidence summary, current real needs, progress timeline and feedback preview.
+- `ProjectQuestionPanel`: titled `AI问项目`, shows deterministic question buttons and calls `answerProjectQuestion`. Required question buttons: `这个项目目前最需要什么？`, `为什么不能直接付款？`, `我能提供的资源适合吗？`.
 
 Use lucide icons for buttons where useful: `HeartHandshake`, `ClipboardList`, `ShieldCheck`, `Inbox`.
 
@@ -929,6 +1081,7 @@ The home page must render:
 指标条
 项目卡片列表
 选中项目详情
+AI问项目
 我要帮助 button
 ```
 
@@ -976,8 +1129,11 @@ Add flow:
 await user.click(screen.getByRole('button', { name: /求助申请入口/ }));
 expect(screen.getByLabelText(/病情摘要/)).toBeInTheDocument();
 expect(screen.getByLabelText(/费用缺口/)).toBeInTheDocument();
+expect(screen.getByLabelText(/当前最需要的支持/)).toBeInTheDocument();
+expect(screen.getByLabelText(/我不会整理材料，先写一段话/)).toBeInTheDocument();
 await user.click(screen.getByRole('button', { name: /生成机构申请包/ }));
 expect(screen.getByText(/最新医疗费用发票/)).toBeInTheDocument();
+expect(screen.getByText(/治疗费用缺口/)).toBeInTheDocument();
 ```
 
 - [ ] **Step 2: Implement component**
@@ -985,10 +1141,13 @@ expect(screen.getByText(/最新医疗费用发票/)).toBeInTheDocument();
 Component requirements:
 
 - Shows a form populated with the fictional leukemia case.
-- Includes fields for applicant role, patient alias, disease, treatment stage, region, total expense, reimbursement estimate, remaining gap, family burden, material notes and consent.
+- Includes fields for applicant role, patient alias, disease, treatment stage, region, total expense, reimbursement estimate, remaining gap, family burden, current real support needs, low-barrier narrative, material notes and consent.
+- Current real support needs must use checkboxes or segmented chips for `治疗费用`, `药品/营养`, `异地住宿`, `交通陪诊`, `医保/救助政策咨询`, `心理支持`, `传播支持`.
+- Low-barrier narrative field label must be `我不会整理材料，先写一段话`.
+- Layout principle: one step asks one class of information; use larger controls and short helper copy for stressed families and low digital-literacy applicants.
 - Button: `生成机构申请包`.
 - After click, call `structureAidApplication`.
-- Render structured summary, missing-material checklist and privacy notice.
+- Render structured summary, current real needs, missing-material checklist and privacy notice.
 
 - [ ] **Step 3: Verify and commit**
 
@@ -1079,8 +1238,11 @@ Add flow:
 ```tsx
 await user.click(screen.getByRole('button', { name: /捐助意向管理/ }));
 expect(screen.getByText(/平台仅登记意向/)).toBeInTheDocument();
+expect(screen.getByLabelText(/帮助类别/)).toBeInTheDocument();
 expect(screen.getByLabelText(/帮助类型/)).toBeInTheDocument();
 await user.click(screen.getByRole('button', { name: /AI分类并生成跟进建议/ }));
+expect(screen.getByText(/钱/)).toBeInTheDocument();
+expect(screen.getByText(/治疗费用缺口/)).toBeInTheDocument();
 expect(screen.getByText(/不在平台内收款/)).toBeInTheDocument();
 ```
 
@@ -1089,10 +1251,13 @@ expect(screen.getByText(/不在平台内收款/)).toBeInTheDocument();
 Component requirements:
 
 - Shows existing seeded intention.
-- Provides form for help type, amount/resource, city, contact, receipt need, message.
+- Provides form for help category, help type, amount/resource, city, contact, receipt need, message.
+- Help category must be `钱`, `物`, `服`.
+- Help type options must include funding intention, medical resource, drug resource, nutrition, accommodation, transportation, volunteer escort, policy consultation, psychological support, propagation, corporate support.
 - Button: `AI分类并生成跟进建议`.
 - Calls `classifyDonationIntention`.
-- Renders priority, tags and follow-up script.
+- Renders category label, priority, tags, matching rationale and follow-up script.
+- Matching rationale must mention the beneficiary-stated real need, such as `治疗费用缺口`, `医保/救助政策咨询` or `复诊交通协助`.
 - Visible compliance copy: `平台仅登记意向，不在平台内收款。`
 
 - [ ] **Step 3: Verify and commit**
@@ -1183,12 +1348,13 @@ Create `DEMO.md` with:
 
 1. 打开首页，说明这是公众项目展示页，不是个人求助平台。
 2. 指出右上角三个入口：求助申请入口、机构四辨工作台、捐助意向管理。
-3. 进入求助申请入口，展示大病救助材料如何被 AI 结构化。
-4. 进入机构四辨工作台，运行四辨审核。
-5. 解释 AI 只给证据、风险、优先级和复核清单，最终由机构工作人员决定。
-6. 回到首页，展示脱敏项目卡片和透明反馈草稿。
-7. 点击我要帮助或进入捐助意向管理，说明平台只登记意向，不在平台内收款。
-8. 展示 AI 分类和机构跟进话术。
+3. 在项目详情页打开 AI问项目，询问“这个项目目前最需要什么？”并说明 AI 只基于脱敏事实回答。
+4. 进入求助申请入口，展示大病救助材料如何被 AI 结构化，尤其是“受助人真实需要”和“我不会整理材料，先写一段话”。
+5. 进入机构四辨工作台，运行四辨审核。
+6. 解释 AI 只给证据、风险、优先级和复核清单，最终由机构工作人员决定。
+7. 回到首页，展示脱敏项目卡片和透明反馈草稿。
+8. 点击我要帮助或进入捐助意向管理，说明平台只登记钱/物/服三类帮助意向，不在平台内收款。
+9. 展示 AI 如何把帮助意向匹配到治疗费用、政策咨询、交通陪诊等真实需要，并生成机构跟进话术。
 ```
 
 - [ ] **Step 2: Update README**
@@ -1198,7 +1364,7 @@ README must include:
 ```md
 # 善见 Agent
 
-大病救助项目系统 MVP。首页展示公众项目，后台承接求助申请、机构四辨审核和捐助意向管理。
+大病救助项目系统 MVP。首页展示公众项目，后台承接求助申请、机构四辨审核和捐助意向管理，并通过 AI问项目、钱/物/服资源匹配和透明反馈，让善意更精准地抵达真实需要。
 
 ## Run
 
@@ -1256,8 +1422,11 @@ git commit -m "docs: add demo script"
 - [ ] Aid application intake generates structured case file and missing-material checklist.
 - [ ] Four-discernment workbench shows 辨善恶、辨真伪、辨大小、辨远近.
 - [ ] Public project cards are de-identified and restrained.
+- [ ] Project detail includes `AI问项目` with deterministic answers based on verified facts and compliance boundary.
+- [ ] Aid application captures beneficiary-stated real needs and a low-barrier narrative field.
 - [ ] Donation function is intention registration only.
-- [ ] Donation-intention management produces classification and follow-up script.
+- [ ] Donation-intention management supports money/material/service categories.
+- [ ] Donation-intention management produces classification, real-need matching rationale and follow-up script.
 - [ ] Feedback draft states it needs institutional review.
 - [ ] Compliance boundary is visible in UI and README.
 - [ ] `npm test` passes.
@@ -1269,9 +1438,11 @@ git commit -m "docs: add demo script"
 Spec coverage:
 
 - Public project display: Task 5 and Task 9.
+- AI问项目: Task 3 and Task 5.
 - Aid application intake: Task 6.
+- Beneficiary dignity and real needs: Task 2 and Task 6.
 - Institutional four-discernment workbench: Task 7.
-- Donation-intention management: Task 8.
+- Money/material/service donation-intention management: Task 2, Task 3 and Task 8.
 - Transparent feedback: Task 9.
 - Compliance boundary: Tasks 5, 8, 10.
 - Demo flow and verification: Task 10.
@@ -1285,4 +1456,6 @@ Type consistency:
 
 - Use the exact domain names from `types.ts`.
 - Keep `DonationIntention.helpType` values exactly as declared.
+- Keep `DonationIntention.helpCategory` values exactly as `money`, `materials`, `services`.
+- Keep `ResourceNeed.type` values exactly as declared.
 - Keep view keys exactly as `home`, `application`, `workbench`, `intentions`.

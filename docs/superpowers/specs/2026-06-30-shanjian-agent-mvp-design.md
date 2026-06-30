@@ -11,7 +11,7 @@ It is not a personal-help platform, not a self-operated fundraising platform, an
 Core line:
 
 ```text
-首页展示公众项目，后台承接求助申请、机构四辨审核和捐助意向管理。
+首页展示公众项目，后台承接求助申请、机构四辨审核和捐助意向管理，让善意从“看见”走到“精准抵达”。
 ```
 
 Compliance boundary:
@@ -28,6 +28,7 @@ Compliance boundary:
 首页 / 公众项目展示
   -> 项目列表
   -> 项目详情
+  -> AI问项目
   -> 救助进展
   -> 成果反馈
   -> 我要帮助：捐助意向登记
@@ -46,12 +47,14 @@ Public visitor:
 
 - Browse de-identified serious-illness aid projects.
 - Understand project progress, verified need, and current resource gap.
-- Submit help intention, such as funding intention, medical resource, drug resource, volunteer help, propagation support, or corporate support.
+- Ask project questions through `AI问项目`: what is missing, why the platform does not collect money, what has been verified, and which help type fits.
+- Submit help intention across three categories: money, materials and services.
 
 Aid applicant / family / volunteer:
 
 - Submit serious-illness aid application.
 - Provide disease summary, expense gap, insurance/reimbursement information, family burden, proof material notes, and privacy authorization.
+- Express real needs and preferences, such as treatment cost, medicine/materials, accommodation, transportation, escorting, policy consultation, psychological support or propagation help.
 - Receive AI-generated missing-material hints and a cleaner application packet.
 
 Institution staff / hospital social worker:
@@ -82,6 +85,7 @@ Main content:
 - Filters: urgent, in treatment, awaiting materials, receiving help intentions, completed.
 - Outcome band: total cases helped, matched intentions, completed feedback reports. In demo, these are simulated metrics.
 - Project detail: de-identified story, evidence summary, progress timeline, help options, feedback section.
+- AI问项目 panel: deterministic question buttons and answers that help the public understand project facts without replacing their decision.
 - Help button: opens donation-intention form, not payment.
 
 Top-right entries:
@@ -105,7 +109,9 @@ Fields:
 - Hospital / location.
 - Expense total, paid amount, insurance/reimbursement estimate, remaining gap.
 - Family burden summary.
+- Real support needs: money, materials and services. Examples include treatment cost, medicine, nutrition, accommodation, transportation, escorting, policy consultation, psychological support and propagation support.
 - Material notes: diagnosis summary, expense list, invoices, proof of relationship, local civil-affairs note.
+- Low-barrier narrative field: `我不会整理材料，先写一段话`, then AI structures it into the institution form.
 - Consent checkbox: institution review and de-identified public display after approval.
 
 AI output:
@@ -143,7 +149,8 @@ Purpose:
 
 Form fields from public project page:
 
-- Help type: funding intention, medical resource, drug resource, volunteer help, propagation support, corporate support.
+- Help category: money, materials, or services.
+- Help type: funding intention, medical resource, drug resource, nutrition/accommodation/transportation support, volunteer escort, policy consultation, psychological support, propagation support, corporate support.
 - Intended amount or resource description.
 - City / region.
 - Contact method.
@@ -154,7 +161,7 @@ AI output for staff:
 
 - Intent classification and priority.
 - Duplicate or similar contact hints.
-- Match suggestions by project, region, resource type and urgency.
+- Match suggestions by project, region, resource type, urgency and beneficiary-stated real needs.
 - Follow-up script.
 - Feedback task creation after help is confirmed by the institution.
 
@@ -170,6 +177,8 @@ FourDiscernmentReport
 ReviewDecision
 PublicProject
 DonationIntention
+ResourceNeed
+ProjectQuestion
 FollowUpTask
 FeedbackReport
 ```
@@ -184,9 +193,10 @@ FeedbackReport
 5. AI highlights missing latest invoice, unclear reimbursement status, missing guardian proof, amount conflict and privacy exposure.
 6. Staff approves for de-identified public display.
 7. Home page shows the generated public project card.
-8. Public visitor clicks 我要帮助 and submits donation/help intention.
-9. Click 捐助意向管理: AI classifies the intention and suggests follow-up.
-10. System generates a transparent feedback report draft for later institutional disclosure.
+8. Public visitor opens AI问项目 and asks what the project currently needs.
+9. Public visitor clicks 我要帮助 and submits money/material/service help intention.
+10. Click 捐助意向管理: AI classifies the intention and suggests follow-up based on real needs.
+11. System generates a transparent feedback report draft for later institutional disclosure.
 ```
 
 ## 7. AI Tasks
@@ -196,7 +206,8 @@ FeedbackReport
 - Four-discernment reasoning: produce explainable suggestions for staff.
 - Privacy redaction: remove identifiable patient, school, hospital room, phone and address details from public copy.
 - Public project generation: produce restrained, factual project card and progress text.
-- Donation-intention matching: classify and match public help intentions to cases and follow-up tasks.
+- AI问项目: answer public questions from project facts, verification status, compliance boundary and current needs.
+- Donation-intention matching: classify money/material/service intentions and match public help intentions to cases, real needs and follow-up tasks.
 - Feedback generation: turn execution logs into donor/public feedback draft.
 
 ## 8. Non-Goals
@@ -231,6 +242,7 @@ AI-discovered issues:
 The MVP is successful if judges can understand, within three minutes:
 
 - This is an institution-facing charity project system, not a personal fundraising platform.
-- AI has concrete work: intake, evidence, four-discernment, privacy, public display, help-intention matching and feedback.
+- AI has concrete work: intake, evidence, four-discernment, privacy, public display, AI问项目, help-intention matching and feedback.
 - The product has a complete loop: public project display, aid application, institutional review, public help intention, institutional follow-up.
+- The product demonstrates dignity and choice: beneficiary-stated real needs are matched with money, materials and services rather than forcing every form of help into cash.
 - The compliance boundary is explicit and visible in the UI.
