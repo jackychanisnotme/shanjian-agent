@@ -1287,7 +1287,7 @@ git commit -m "feat: add donation intention management"
 - Modify: `shanjian-agent/src/styles/global.css`
 - Modify: `shanjian-agent/tests/app-flow.test.tsx`
 
-- [ ] **Step 1: Add feedback test**
+- [x] **Step 1: Add feedback test**
 
 Add:
 
@@ -1296,7 +1296,7 @@ expect(screen.getByText(/透明反馈草稿/)).toBeInTheDocument();
 expect(screen.getByText(/不含可识别个人隐私/)).toBeInTheDocument();
 ```
 
-- [ ] **Step 2: Implement feedback preview**
+- [x] **Step 2: Implement feedback preview**
 
 Requirements:
 
@@ -1304,7 +1304,7 @@ Requirements:
 - Shows a report-style panel titled `透明反馈草稿`.
 - Adds note: `需机构工作人员复核后发布`.
 
-- [ ] **Step 3: Polish CSS**
+- [x] **Step 3: Polish CSS**
 
 Requirements:
 
@@ -1314,7 +1314,7 @@ Requirements:
 - Risk chips use restrained amber/red.
 - Public home feels credible and operational, not like a dramatic donation landing page.
 
-- [ ] **Step 4: Verify and commit**
+- [x] **Step 4: Verify and commit**
 
 Run:
 

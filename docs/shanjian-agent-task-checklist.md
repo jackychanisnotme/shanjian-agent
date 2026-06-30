@@ -77,8 +77,8 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 ## Phase 7: Feedback And Demo
 
-- [ ] Generate transparent feedback draft.
-- [ ] Feedback says it needs institution review.
+- [x] Generate transparent feedback draft.
+- [x] Feedback says it needs institution review.
 - [ ] README explains AI问项目 and money/material/service matching.
 - [ ] README documents compliance boundary.
 - [ ] DEMO.md explains 3-minute pitch flow.
