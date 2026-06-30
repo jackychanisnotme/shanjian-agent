@@ -7,6 +7,7 @@ import { ComplianceNotice } from './components/ComplianceNotice';
 import { DonationIntentionManagement } from './components/DonationIntentionManagement';
 import { FourDiscernmentWorkbench } from './components/FourDiscernmentWorkbench';
 import { MetricStrip } from './components/MetricStrip';
+import { HomeVisual } from './components/HomeVisual';
 import { ProjectCard } from './components/ProjectCard';
 import { ProjectDetail } from './components/ProjectDetail';
 import { ProjectQuestionPanel } from './components/ProjectQuestionPanel';
@@ -35,11 +36,14 @@ export default function App() {
       {view === 'home' && (
         <div className="view-panel public-home">
           <section className="home-heading" aria-labelledby="home-title">
-            <p className="eyebrow">机构项目系统 · 虚构/脱敏演示数据</p>
-            <h1 id="home-title">公众项目展示</h1>
-            <p>
-              展示经机构审核后的大病救助项目、救助进展和成果反馈。公众在这里了解真实需要，并提交钱、物、服三类帮助意向。
-            </p>
+            <div className="home-heading-copy">
+              <p className="eyebrow">机构项目系统 · 虚构/脱敏演示数据</p>
+              <h1 id="home-title">公众项目展示</h1>
+              <p>
+                展示经机构审核后的大病救助项目、救助进展和成果反馈。公众在这里了解真实需要，并提交钱、物、服三类帮助意向。
+              </p>
+            </div>
+            <HomeVisual />
           </section>
           <ComplianceNotice />
           <MetricStrip />

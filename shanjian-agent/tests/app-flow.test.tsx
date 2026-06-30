@@ -10,6 +10,7 @@ describe('Shanjian Agent flow', () => {
 
     expect(screen.getByRole('heading', { name: /公众项目展示/ })).toBeInTheDocument();
     expect(screen.getByText(/不自营募捐/)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /机构项目工作台示意图/ })).toBeInTheDocument();
     expect(screen.getAllByText(/患儿A/).length).toBeGreaterThan(0);
     expect(screen.getByText(/AI问项目/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /这个项目目前最需要什么/ })).toBeInTheDocument();
