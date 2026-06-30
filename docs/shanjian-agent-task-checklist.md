@@ -19,14 +19,14 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 - [x] Define `ResourceNeed`, `HelpCategory`, `ProjectQuestion`, `ProjectAnswer`.
 - [x] Seed fictional acute leukemia child aid case.
 - [x] Seed three public project cards.
-- [ ] Implement deterministic intake structuring agent.
-- [ ] Implement deterministic four-discernment agent.
-- [ ] Implement public project generation agent.
-- [ ] Implement AI问项目 agent.
-- [ ] Implement donation-intention classification agent.
-- [ ] Support money/material/service donation categories.
-- [ ] Capture beneficiary-stated real needs and low-barrier narrative input.
-- [ ] Implement feedback draft generator.
+- [x] Implement deterministic intake structuring agent.
+- [x] Implement deterministic four-discernment agent.
+- [x] Implement public project generation agent.
+- [x] Implement AI问项目 agent.
+- [x] Implement donation-intention classification agent.
+- [x] Support money/material/service donation categories.
+- [x] Capture beneficiary-stated real needs and low-barrier narrative input.
+- [x] Implement feedback draft generator.
 
 ## Phase 2: App Shell And Navigation
 

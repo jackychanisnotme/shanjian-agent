@@ -545,7 +545,7 @@ git commit -m "feat: add charity aid domain data"
 - Modify: `shanjian-agent/src/domain/agents.test.ts`
 - Create: `shanjian-agent/src/domain/agents.ts`
 
-- [ ] **Step 1: Add tests for AI-like outputs**
+- [x] **Step 1: Add tests for AI-like outputs**
 
 Append to `src/domain/agents.test.ts`:
 
@@ -616,7 +616,7 @@ describe('deterministic agents', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests and verify failure**
+- [x] **Step 2: Run tests and verify failure**
 
 Run:
 
@@ -626,7 +626,7 @@ npm test -- src/domain/agents.test.ts
 
 Expected: FAIL because `agents.ts` does not exist.
 
-- [ ] **Step 3: Implement agents**
+- [x] **Step 3: Implement agents**
 
 Create `src/domain/agents.ts`:
 
@@ -797,7 +797,7 @@ export function generateFeedbackDraft(project: PublicProject) {
 }
 ```
 
-- [ ] **Step 4: Verify tests pass and commit**
+- [x] **Step 4: Verify tests pass and commit**
 
 Run:
 
