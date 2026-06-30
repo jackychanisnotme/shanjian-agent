@@ -824,7 +824,7 @@ git commit -m "feat: add deterministic charity agents"
 - Create: `shanjian-agent/tests/app-flow.test.tsx`
 - Modify: `shanjian-agent/src/App.tsx`
 
-- [ ] **Step 1: Write app flow test**
+- [x] **Step 1: Write app flow test**
 
 Create `tests/app-flow.test.tsx`:
 
@@ -852,7 +852,7 @@ describe('Shanjian Agent flow', () => {
 });
 ```
 
-- [ ] **Step 2: Run test and verify failure**
+- [x] **Step 2: Run test and verify failure**
 
 Run:
 
@@ -862,7 +862,7 @@ npm test -- tests/app-flow.test.tsx
 
 Expected: FAIL because navigation UI does not exist.
 
-- [ ] **Step 3: Implement navigation and store**
+- [x] **Step 3: Implement navigation and store**
 
 Create `src/app/navigation.ts`:
 
@@ -928,7 +928,7 @@ export const initialDemoState: DemoState = {
 };
 ```
 
-- [ ] **Step 4: Implement App navigation**
+- [x] **Step 4: Implement App navigation**
 
 Modify `src/App.tsx`:
 
@@ -966,7 +966,7 @@ export default function App() {
 }
 ```
 
-- [ ] **Step 5: Add basic layout CSS**
+- [x] **Step 5: Add basic layout CSS**
 
 Append to `src/styles/global.css`:
 
@@ -1004,7 +1004,7 @@ Append to `src/styles/global.css`:
 }
 ```
 
-- [ ] **Step 6: Verify and commit**
+- [x] **Step 6: Verify and commit**
 
 Run:
 

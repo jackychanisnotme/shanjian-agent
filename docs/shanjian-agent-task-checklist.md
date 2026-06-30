@@ -30,11 +30,11 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 ## Phase 2: App Shell And Navigation
 
-- [ ] Home starts as `公众项目展示`.
-- [ ] Right top nav includes `求助申请入口`.
-- [ ] Right top nav includes `机构四辨工作台`.
-- [ ] Right top nav includes `捐助意向管理`.
-- [ ] Mobile nav wraps without overflow.
+- [x] Home starts as `公众项目展示`.
+- [x] Right top nav includes `求助申请入口`.
+- [x] Right top nav includes `机构四辨工作台`.
+- [x] Right top nav includes `捐助意向管理`.
+- [x] Mobile nav wraps without overflow.
 
 ## Phase 3: Public Home
 

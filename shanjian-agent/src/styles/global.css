@@ -21,5 +21,92 @@ textarea {
 
 .app-root {
   min-height: 100vh;
-  padding: 32px;
+  padding: 0 28px 48px;
+}
+
+.topbar {
+  align-items: center;
+  border-bottom: 1px solid #ded8ce;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  padding: 18px 0;
+}
+
+.brand,
+.topnav button {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #d8d2c7;
+  border-radius: 8px;
+  color: #202426;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 1.2;
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+.brand {
+  border: 0;
+  font-size: 18px;
+  font-weight: 700;
+  padding-left: 0;
+}
+
+.topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.view-panel {
+  margin: 32px auto 0;
+  max-width: 1120px;
+}
+
+.eyebrow {
+  color: #69746f;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+h1 {
+  font-size: 36px;
+  line-height: 1.15;
+  margin: 0 0 14px;
+}
+
+p {
+  line-height: 1.65;
+}
+
+@media (max-width: 720px) {
+  .app-root {
+    padding: 0 16px 36px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .topnav {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .topnav button {
+    flex: 1 1 150px;
+    min-width: 0;
+    white-space: normal;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
 }
