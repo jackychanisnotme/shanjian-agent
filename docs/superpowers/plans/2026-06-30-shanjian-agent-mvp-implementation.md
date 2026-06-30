@@ -218,7 +218,7 @@ git commit -m "feat: scaffold Shanjian Agent app"
 - Create: `shanjian-agent/src/domain/demoData.ts`
 - Create: `shanjian-agent/src/domain/agents.test.ts`
 
-- [ ] **Step 1: Write tests for seeded demo data**
+- [x] **Step 1: Write tests for seeded demo data**
 
 Create `src/domain/agents.test.ts`:
 
@@ -240,7 +240,7 @@ describe('demo data', () => {
 });
 ```
 
-- [ ] **Step 2: Run test and verify it fails**
+- [x] **Step 2: Run test and verify it fails**
 
 Run:
 
@@ -250,7 +250,7 @@ npm test -- src/domain/agents.test.ts
 
 Expected: FAIL because `demoData` does not exist.
 
-- [ ] **Step 3: Implement domain types**
+- [x] **Step 3: Implement domain types**
 
 Create `src/domain/types.ts`:
 
@@ -390,7 +390,7 @@ export interface ProjectAnswer {
 }
 ```
 
-- [ ] **Step 4: Implement demo data**
+- [x] **Step 4: Implement demo data**
 
 Create `src/domain/demoData.ts`:
 
@@ -521,7 +521,7 @@ export const seedPublicProjects: PublicProject[] = [
 ];
 ```
 
-- [ ] **Step 5: Verify tests pass and commit**
+- [x] **Step 5: Verify tests pass and commit**
 
 Run:
 

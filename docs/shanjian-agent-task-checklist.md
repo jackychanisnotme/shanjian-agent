@@ -15,10 +15,10 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 ## Phase 1: Domain And Agent Core
 
-- [ ] Define `AidApplication`, `PublicProject`, `DonationIntention`, `FourDiscernmentReport`.
-- [ ] Define `ResourceNeed`, `HelpCategory`, `ProjectQuestion`, `ProjectAnswer`.
-- [ ] Seed fictional acute leukemia child aid case.
-- [ ] Seed three public project cards.
+- [x] Define `AidApplication`, `PublicProject`, `DonationIntention`, `FourDiscernmentReport`.
+- [x] Define `ResourceNeed`, `HelpCategory`, `ProjectQuestion`, `ProjectAnswer`.
+- [x] Seed fictional acute leukemia child aid case.
+- [x] Seed three public project cards.
 - [ ] Implement deterministic intake structuring agent.
 - [ ] Implement deterministic four-discernment agent.
 - [ ] Implement public project generation agent.
