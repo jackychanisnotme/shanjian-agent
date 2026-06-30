@@ -17,14 +17,13 @@ Copy this whole prompt into Codex goal mode.
 必须遵守：
 1. 使用 docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md 作为主执行计划，逐项打勾推进。
 2. 在 /Users/pc/Documents/7.3黑客松/shanjian-agent 新建独立 Vite + React + TypeScript Web App。
-3. 不要在 /Users/pc/Documents/agentERP-0.1.0 里实现；它是 Chrome 扩展，不适合作为本项目底座。
-4. 产品结构必须是：首页展示公众项目；右上角三个入口分别为“求助申请入口”“机构四辨工作台”“捐助意向管理”。
-5. 捐助功能只做“捐助/帮助意向登记”，不做真实支付，不做平台收款，不做资金池。
-6. Demo 使用虚构/脱敏大病救助案例，不上传或处理真实患者隐私数据。
-7. AI 功能先用 deterministic local agent functions 实现，保证离线可演示；函数接口要清晰，便于后续替换成真实 LLM。
-8. UI 要克制、可信、像公益机构项目系统；不要做情绪化募捐页，不要做营销 landing page，不要使用夸张悲情文案。
-9. 所有最终判断都必须表现为机构人工复核，不能让 AI 自动批准救助。
-10. 每个阶段完成后运行验证命令并提交小 commit。
+3. 产品结构必须是：首页展示公众项目；右上角三个入口分别为“求助申请入口”“机构四辨工作台”“捐助意向管理”。
+4. 捐助功能只做“捐助/帮助意向登记”，不做真实支付，不做平台收款，不做资金池。
+5. Demo 使用虚构/脱敏大病救助案例，不上传或处理真实患者隐私数据。
+6. AI 功能先用 deterministic local agent functions 实现，保证离线可演示；函数接口要清晰，便于后续替换成真实 LLM。
+7. UI 要克制、可信、像公益机构项目系统；不要做情绪化募捐页，不要做营销 landing page，不要使用夸张悲情文案。
+8. 所有最终判断都必须表现为机构人工复核，不能让 AI 自动批准救助。
+9. 每个阶段完成后运行验证命令并提交小 commit。
 
 实现范围：
 - shanjian-agent/src/domain/types.ts

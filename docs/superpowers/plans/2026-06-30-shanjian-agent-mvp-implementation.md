@@ -18,7 +18,7 @@ Read these files before implementing:
 - `ai-charity-hackathon-pack.md`
 - `charity-operations-research.md`
 
-Do not build inside `/Users/pc/Documents/agentERP-0.1.0`; it is a Chrome extension and is not the right base for this platform. Build a new app at:
+Build a new standalone app inside the current hackathon workspace:
 
 ```text
 /Users/pc/Documents/7.3黑客松/shanjian-agent
