@@ -1,0 +1,25 @@
+:root {
+  color: #202426;
+  background: #f6f4ef;
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.app-root {
+  min-height: 100vh;
+  padding: 32px;
+}

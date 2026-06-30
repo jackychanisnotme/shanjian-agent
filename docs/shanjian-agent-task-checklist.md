@@ -8,10 +8,10 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 ## Phase 0: Setup
 
-- [ ] Create standalone app at `shanjian-agent/`.
-- [ ] Use Vite + React + TypeScript.
-- [ ] Install `lucide-react`, `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `jsdom`.
-- [ ] Verify `npm test` and `npm run build`.
+- [x] Create standalone app at `shanjian-agent/`.
+- [x] Use Vite + React + TypeScript.
+- [x] Install `lucide-react`, `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `jsdom`.
+- [x] Verify `npm test` and `npm run build`.
 
 ## Phase 1: Domain And Agent Core
 

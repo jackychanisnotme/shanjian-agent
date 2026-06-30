@@ -92,7 +92,7 @@ File responsibilities:
 - Create: `shanjian-agent/src/App.tsx`
 - Create: `shanjian-agent/src/styles/global.css`
 
-- [ ] **Step 1: Create Vite React TypeScript app**
+- [x] **Step 1: Create Vite React TypeScript app**
 
 Run:
 
@@ -107,7 +107,7 @@ npm install -D vitest jsdom @testing-library/react @testing-library/jest-dom @te
 
 Expected: `shanjian-agent/package.json` exists and dependencies install without errors.
 
-- [ ] **Step 2: Configure tests**
+- [x] **Step 2: Configure tests**
 
 Modify `shanjian-agent/vite.config.ts`:
 
@@ -145,7 +145,7 @@ Modify `shanjian-agent/package.json` scripts:
 }
 ```
 
-- [ ] **Step 3: Replace starter app with a smoke shell**
+- [x] **Step 3: Replace starter app with a smoke shell**
 
 Create `src/App.tsx`:
 
@@ -192,7 +192,7 @@ textarea {
 }
 ```
 
-- [ ] **Step 4: Verify scaffold**
+- [x] **Step 4: Verify scaffold**
 
 Run:
 
@@ -203,7 +203,7 @@ npm run build
 
 Expected: both commands exit 0.
 
-- [ ] **Step 5: Commit scaffold**
+- [x] **Step 5: Commit scaffold**
 
 ```bash
 git add shanjian-agent
