@@ -1121,7 +1121,7 @@ git commit -m "feat: build public project home"
 - Modify: `shanjian-agent/src/App.tsx`
 - Modify: `shanjian-agent/tests/app-flow.test.tsx`
 
-- [ ] **Step 1: Add intake test**
+- [x] **Step 1: Add intake test**
 
 Add flow:
 
@@ -1136,7 +1136,7 @@ expect(screen.getByText(/最新医疗费用发票/)).toBeInTheDocument();
 expect(screen.getByText(/治疗费用缺口/)).toBeInTheDocument();
 ```
 
-- [ ] **Step 2: Implement component**
+- [x] **Step 2: Implement component**
 
 Component requirements:
 
@@ -1149,7 +1149,7 @@ Component requirements:
 - After click, call `structureAidApplication`.
 - Render structured summary, current real needs, missing-material checklist and privacy notice.
 
-- [ ] **Step 3: Verify and commit**
+- [x] **Step 3: Verify and commit**
 
 Run:
 

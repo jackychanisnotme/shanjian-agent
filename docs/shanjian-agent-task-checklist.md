@@ -47,11 +47,11 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 ## Phase 4: Aid Application Entry
 
-- [ ] Show large-illness aid application form.
-- [ ] Include disease, treatment, expense, reimbursement, family burden and materials.
-- [ ] Include privacy and institution review consent.
-- [ ] Generate structured case file.
-- [ ] Generate missing-material checklist.
+- [x] Show large-illness aid application form.
+- [x] Include disease, treatment, expense, reimbursement, family burden and materials.
+- [x] Include privacy and institution review consent.
+- [x] Generate structured case file.
+- [x] Generate missing-material checklist.
 
 ## Phase 5: Institutional Four-Discernment Workbench
 

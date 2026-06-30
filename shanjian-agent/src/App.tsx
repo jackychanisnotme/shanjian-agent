@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { loadDemoState, saveDemoState } from './app/demoStore';
 import type { ViewKey } from './app/navigation';
 import { AppShell } from './components/AppShell';
+import { AidApplicationEntry } from './components/AidApplicationEntry';
 import { ComplianceNotice } from './components/ComplianceNotice';
 import { MetricStrip } from './components/MetricStrip';
 import { ProjectCard } from './components/ProjectCard';
@@ -61,10 +62,7 @@ export default function App() {
       )}
 
       {view === 'application' && (
-        <section className="view-panel" aria-labelledby="application-title">
-          <h1 id="application-title">求助申请入口</h1>
-          <p>用于提交虚构/脱敏的大病救助申请材料。</p>
-        </section>
+        <AidApplicationEntry application={state.applications[0]} />
       )}
 
       {view === 'workbench' && (

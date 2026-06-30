@@ -385,6 +385,120 @@ h3 {
   margin: 0;
 }
 
+.module-page {
+  display: grid;
+  gap: 20px;
+}
+
+.module-heading {
+  max-width: 820px;
+}
+
+.module-heading p:last-child {
+  color: var(--muted);
+}
+
+.form-grid {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 18px;
+}
+
+.form-grid label,
+.checkbox-group {
+  color: #3c4541;
+  display: grid;
+  font-weight: 700;
+  gap: 7px;
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  min-height: 42px;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.form-grid textarea {
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.span-2 {
+  grid-column: 1 / -1;
+}
+
+.checkbox-group {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 0;
+  padding: 14px;
+}
+
+.checkbox-group legend {
+  padding: 0 6px;
+}
+
+.checkbox-group p {
+  color: var(--muted);
+  font-weight: 400;
+  margin: 0;
+}
+
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.check-chip,
+.check-line {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  line-height: 1.35;
+  padding: 9px 11px;
+}
+
+.check-chip input,
+.check-line input {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.form-submit {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.result-panel {
+  background: #f8fbf8;
+  border: 1px solid rgba(34, 110, 99, 0.32);
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.result-columns {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 @media (max-width: 720px) {
   .app-root {
     padding: 0 16px 36px;
@@ -411,9 +525,11 @@ h3 {
     font-size: 28px;
   }
 
+  .form-grid,
   .metric-strip,
   .home-grid,
-  .detail-layout {
+  .detail-layout,
+  .result-columns {
     grid-template-columns: 1fr;
   }
 

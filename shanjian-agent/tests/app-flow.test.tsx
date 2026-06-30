@@ -19,6 +19,13 @@ describe('Shanjian Agent flow', () => {
 
     await user.click(screen.getByRole('button', { name: /求助申请入口/ }));
     expect(screen.getByRole('heading', { name: /求助申请入口/ })).toBeInTheDocument();
+    expect(screen.getByLabelText(/病情摘要/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/费用缺口/)).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: /当前最需要的支持/ })).toBeInTheDocument();
+    expect(screen.getByLabelText(/我不会整理材料，先写一段话/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /生成机构申请包/ }));
+    expect(screen.getByText(/最新医疗费用发票/)).toBeInTheDocument();
+    expect(screen.getAllByText(/治疗费用缺口/).length).toBeGreaterThan(0);
 
     await user.click(screen.getByRole('button', { name: /机构四辨工作台/ }));
     expect(screen.getByRole('heading', { name: /机构四辨工作台/ })).toBeInTheDocument();
