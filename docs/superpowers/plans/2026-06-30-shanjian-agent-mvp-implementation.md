@@ -1339,7 +1339,7 @@ git commit -m "feat: add feedback preview and polish"
 - Create: `shanjian-agent/DEMO.md`
 - Modify: `shanjian-agent/README.md`
 
-- [ ] **Step 1: Write demo script**
+- [x] **Step 1: Write demo script**
 
 Create `DEMO.md` with:
 
@@ -1357,7 +1357,7 @@ Create `DEMO.md` with:
 9. 展示 AI 如何把帮助意向匹配到治疗费用、政策咨询、交通陪诊等真实需要，并生成机构跟进话术。
 ```
 
-- [ ] **Step 2: Update README**
+- [x] **Step 2: Update README**
 
 README must include:
 
@@ -1385,7 +1385,7 @@ npm run build
 本 demo 不处理真实患者数据，不自营公开募捐，不代收善款，不建立资金池，不提供医疗诊断或治疗建议。捐助功能为意向登记，由有资质机构后续跟进。
 ```
 
-- [ ] **Step 3: Full verification**
+- [x] **Step 3: Full verification**
 
 Run:
 
@@ -1408,7 +1408,7 @@ Use browser verification:
 - Verify mobile viewport around 390px width: nav wraps cleanly, buttons do not overflow, cards stack.
 - Click through all four modules.
 
-- [ ] **Step 4: Commit final docs**
+- [x] **Step 4: Commit final docs**
 
 ```bash
 git add shanjian-agent/README.md shanjian-agent/DEMO.md
@@ -1417,21 +1417,21 @@ git commit -m "docs: add demo script"
 
 ## Acceptance Checklist
 
-- [ ] Home page is public project display, not a marketing-only landing page.
-- [ ] Top-right entries exist: `求助申请入口`, `机构四辨工作台`, `捐助意向管理`.
-- [ ] Aid application intake generates structured case file and missing-material checklist.
-- [ ] Four-discernment workbench shows 辨善恶、辨真伪、辨大小、辨远近.
-- [ ] Public project cards are de-identified and restrained.
-- [ ] Project detail includes `AI问项目` with deterministic answers based on verified facts and compliance boundary.
-- [ ] Aid application captures beneficiary-stated real needs and a low-barrier narrative field.
-- [ ] Donation function is intention registration only.
-- [ ] Donation-intention management supports money/material/service categories.
-- [ ] Donation-intention management produces classification, real-need matching rationale and follow-up script.
-- [ ] Feedback draft states it needs institutional review.
-- [ ] Compliance boundary is visible in UI and README.
-- [ ] `npm test` passes.
-- [ ] `npm run build` passes.
-- [ ] Browser verification passes on desktop and mobile.
+- [x] Home page is public project display, not a marketing-only landing page.
+- [x] Top-right entries exist: `求助申请入口`, `机构四辨工作台`, `捐助意向管理`.
+- [x] Aid application intake generates structured case file and missing-material checklist.
+- [x] Four-discernment workbench shows 辨善恶、辨真伪、辨大小、辨远近.
+- [x] Public project cards are de-identified and restrained.
+- [x] Project detail includes `AI问项目` with deterministic answers based on verified facts and compliance boundary.
+- [x] Aid application captures beneficiary-stated real needs and a low-barrier narrative field.
+- [x] Donation function is intention registration only.
+- [x] Donation-intention management supports money/material/service categories.
+- [x] Donation-intention management produces classification, real-need matching rationale and follow-up script.
+- [x] Feedback draft states it needs institutional review.
+- [x] Compliance boundary is visible in UI and README.
+- [x] `npm test` passes.
+- [x] `npm run build` passes.
+- [x] Browser verification passes on desktop and mobile.
 
 ## Self-Review
 

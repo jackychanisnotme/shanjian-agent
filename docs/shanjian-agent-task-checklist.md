@@ -79,21 +79,21 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 - [x] Generate transparent feedback draft.
 - [x] Feedback says it needs institution review.
-- [ ] README explains AI问项目 and money/material/service matching.
-- [ ] README documents compliance boundary.
-- [ ] DEMO.md explains 3-minute pitch flow.
-- [ ] Run `npm test`.
-- [ ] Run `npm run build`.
-- [ ] Open in browser and verify desktop.
-- [ ] Open in browser and verify mobile.
+- [x] README explains AI问项目 and money/material/service matching.
+- [x] README documents compliance boundary.
+- [x] DEMO.md explains 3-minute pitch flow.
+- [x] Run `npm test`.
+- [x] Run `npm run build`.
+- [x] Open in browser and verify desktop.
+- [x] Open in browser and verify mobile.
 
 ## Non-Negotiables
 
-- [ ] No real payment.
-- [ ] No platform-side money custody.
-- [ ] No self-operated public fundraising.
-- [ ] No real patient data upload in demo.
-- [ ] No AI-only approval.
-- [ ] No medical diagnosis or treatment advice.
-- [ ] No dramatic tragedy-marketing UI.
-- [ ] Compliance boundary visible in UI.
+- [x] No real payment.
+- [x] No platform-side money custody.
+- [x] No self-operated public fundraising.
+- [x] No real patient data upload in demo.
+- [x] No AI-only approval.
+- [x] No medical diagnosis or treatment advice.
+- [x] No dramatic tragedy-marketing UI.
+- [x] Compliance boundary visible in UI.

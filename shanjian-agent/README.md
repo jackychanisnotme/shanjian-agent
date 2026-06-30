@@ -1,32 +1,30 @@
-# React + TypeScript + Vite
+# 善见 Agent
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+大病救助项目系统 MVP。首页展示公众项目，后台承接求助申请、机构四辨审核和捐助意向管理，并通过 AI问项目、钱/物/服资源匹配和透明反馈，让善意更精准地抵达真实需要。
 
-Currently, two official plugins are available:
+## Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Verify
+
+```bash
+npm test
+npm run build
+```
+
+## MVP Scope
+
+- 首页第一屏是公众项目展示，不是营销 landing page。
+- 右上角三个入口分别是：求助申请入口、机构四辨工作台、捐助意向管理。
+- AI 功能由 deterministic local agent functions 实现，离线可演示，接口集中在 `src/domain/agents.ts`，后续可替换真实 LLM。
+- Demo 数据均为虚构/脱敏大病救助案例，不上传或处理真实患者隐私数据。
+- 捐助功能只做“捐助/帮助意向登记”，支持钱、物、服三类资源匹配，不做真实支付。
+- 所有审核输出都是证据、风险、优先级和人工复核清单，最终判断由机构工作人员完成。
+
+## Compliance Boundary
+
+本 demo 不处理真实患者数据，不自营公开募捐，不代收善款，不建立资金池，不提供医疗诊断或治疗建议。捐助功能为意向登记，由有资质机构后续跟进；真实募捐主体、资金账户、票据、拨付和最终救助决策由有资质机构负责。
