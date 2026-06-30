@@ -1231,7 +1231,7 @@ git commit -m "feat: add four-discernment workbench"
 - Modify: `shanjian-agent/src/App.tsx`
 - Modify: `shanjian-agent/tests/app-flow.test.tsx`
 
-- [ ] **Step 1: Add donation-intention test**
+- [x] **Step 1: Add donation-intention test**
 
 Add flow:
 
@@ -1246,7 +1246,7 @@ expect(screen.getByText(/治疗费用缺口/)).toBeInTheDocument();
 expect(screen.getByText(/不在平台内收款/)).toBeInTheDocument();
 ```
 
-- [ ] **Step 2: Implement component**
+- [x] **Step 2: Implement component**
 
 Component requirements:
 
@@ -1260,7 +1260,7 @@ Component requirements:
 - Matching rationale must mention the beneficiary-stated real need, such as `治疗费用缺口`, `医保/救助政策咨询` or `复诊交通协助`.
 - Visible compliance copy: `平台仅登记意向，不在平台内收款。`
 
-- [ ] **Step 3: Verify and commit**
+- [x] **Step 3: Verify and commit**
 
 Run:
 

@@ -66,14 +66,14 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 ## Phase 6: Donation Intention Management
 
-- [ ] Show existing help intentions.
-- [ ] Show help-intention form.
-- [ ] Help categories include money, materials, services.
-- [ ] Help types include funding intention, medical resource, drug resource, nutrition, accommodation, transportation, volunteer escort, policy consultation, psychological support, propagation, corporate support.
-- [ ] AI classifies intention.
-- [ ] AI matches to beneficiary-stated real needs.
-- [ ] AI generates institution follow-up script.
-- [ ] UI states platform does not collect money.
+- [x] Show existing help intentions.
+- [x] Show help-intention form.
+- [x] Help categories include money, materials, services.
+- [x] Help types include funding intention, medical resource, drug resource, nutrition, accommodation, transportation, volunteer escort, policy consultation, psychological support, propagation, corporate support.
+- [x] AI classifies intention.
+- [x] AI matches to beneficiary-stated real needs.
+- [x] AI generates institution follow-up script.
+- [x] UI states platform does not collect money.
 
 ## Phase 7: Feedback And Demo
 

@@ -572,6 +572,66 @@ h3 {
   gap: 8px;
 }
 
+.intentions-layout {
+  align-items: start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.75fr);
+}
+
+.intention-form {
+  margin: 0;
+}
+
+.intention-list {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.intention-list li {
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  gap: 4px;
+  padding-bottom: 10px;
+}
+
+.intention-list span {
+  color: var(--muted);
+}
+
+.classification-box {
+  background: #f8fbf8;
+  border: 1px solid rgba(34, 110, 99, 0.32);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-pill {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: #3d4b46;
+  font-size: 13px;
+  padding: 5px 9px;
+}
+
+.follow-script {
+  border-left: 3px solid var(--accent);
+  margin: 0;
+  padding-left: 12px;
+}
+
 @media (max-width: 720px) {
   .app-root {
     padding: 0 16px 36px;
@@ -602,6 +662,7 @@ h3 {
   .case-summary,
   .discernment-grid,
   .evidence-list,
+  .intentions-layout,
   .metric-strip,
   .home-grid,
   .detail-layout,

@@ -40,6 +40,13 @@ describe('Shanjian Agent flow', () => {
 
     await user.click(screen.getByRole('button', { name: /捐助意向管理/ }));
     expect(screen.getByRole('heading', { name: /捐助意向管理/ })).toBeInTheDocument();
+    expect(screen.getByText(/平台仅登记意向/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/帮助类别/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/帮助类型/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /AI分类并生成跟进建议/ }));
+    expect(screen.getAllByText(/钱/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/治疗费用缺口/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/不在平台内收款/).length).toBeGreaterThan(0);
 
     await user.click(screen.getByRole('button', { name: /善见 Agent/ }));
     await user.click(screen.getAllByRole('button', { name: /我要帮助/ })[0]);

@@ -4,6 +4,7 @@ import type { ViewKey } from './app/navigation';
 import { AppShell } from './components/AppShell';
 import { AidApplicationEntry } from './components/AidApplicationEntry';
 import { ComplianceNotice } from './components/ComplianceNotice';
+import { DonationIntentionManagement } from './components/DonationIntentionManagement';
 import { FourDiscernmentWorkbench } from './components/FourDiscernmentWorkbench';
 import { MetricStrip } from './components/MetricStrip';
 import { ProjectCard } from './components/ProjectCard';
@@ -74,11 +75,17 @@ export default function App() {
       )}
 
       {view === 'intentions' && (
-        <section className="view-panel" aria-labelledby="intentions-title">
-          <h1 id="intentions-title">捐助意向管理</h1>
-          <p>项目：{selectedProject.patientAlias} · {selectedProject.verifiedNeed}</p>
-          <p>平台仅登记帮助意向，不在平台内收款。</p>
-        </section>
+        <DonationIntentionManagement
+          intentions={state.intentions}
+          project={selectedProject}
+          projects={state.projects}
+          onRegister={(intention) =>
+            setState((current) => ({
+              ...current,
+              intentions: [intention, ...current.intentions],
+            }))
+          }
+        />
       )}
     </AppShell>
   );
