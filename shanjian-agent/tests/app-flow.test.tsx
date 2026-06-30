@@ -9,11 +9,17 @@ describe('Shanjian Agent flow', () => {
     render(<App />);
 
     expect(screen.getByRole('heading', { name: /公众项目展示/ })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /让善意先被核验，再抵达/ })).toBeInTheDocument();
+    expect(screen.getByText(/参考优秀非营利网站的信息架构/)).toBeInTheDocument();
     expect(screen.getByText(/不自营募捐/)).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: /机构项目工作台示意图/ })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /机构项目复核工作台示意图/ })).toBeInTheDocument();
+    expect(screen.getByText(/项目核验路径/)).toBeInTheDocument();
+    expect(screen.getByText(/尊严与选择/)).toBeInTheDocument();
     expect(screen.getAllByText(/患儿A/).length).toBeGreaterThan(0);
     expect(screen.getByText(/AI问项目/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /这个项目目前最需要什么/ })).toBeInTheDocument();
+    expect(screen.getByText(/提示词库/)).toBeInTheDocument();
+    expect(screen.getByText(/证据来源/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /问当前最缺什么/ })).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /我要帮助/ }).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/透明反馈草稿/).length).toBeGreaterThan(0);
     expect(screen.getByText(/不含可识别个人隐私/)).toBeInTheDocument();
@@ -24,9 +30,11 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getByLabelText(/费用缺口/)).toBeInTheDocument();
     expect(screen.getByRole('group', { name: /当前最需要的支持/ })).toBeInTheDocument();
     expect(screen.getByLabelText(/我不会整理材料，先写一段话/)).toBeInTheDocument();
+    expect(screen.getByText(/AI 整理提示词/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /生成机构申请包/ }));
     expect(screen.getByText(/最新医疗费用发票/)).toBeInTheDocument();
     expect(screen.getAllByText(/治疗费用缺口/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/人工复核前不可公开/)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /机构四辨工作台/ }));
     expect(screen.getByRole('heading', { name: /机构四辨工作台/ })).toBeInTheDocument();
@@ -34,6 +42,7 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getByText(/辨真伪/)).toBeInTheDocument();
     expect(screen.getByText(/辨大小/)).toBeInTheDocument();
     expect(screen.getByText(/辨远近/)).toBeInTheDocument();
+    expect(screen.getByText(/AI 输出不是结论，是复核材料/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /运行四辨审核/ }));
     expect(screen.getByText(/人工核对最新发票/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /批准展示/ }));
@@ -44,6 +53,7 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getByText(/平台仅登记意向/)).toBeInTheDocument();
     expect(screen.getByLabelText(/帮助类别/)).toBeInTheDocument();
     expect(screen.getByLabelText(/帮助类型/)).toBeInTheDocument();
+    expect(screen.getByText(/资源匹配不是收款/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /AI分类并生成跟进建议/ }));
     expect(screen.getAllByText(/钱/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/治疗费用缺口/).length).toBeGreaterThan(0);

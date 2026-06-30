@@ -67,11 +67,18 @@ export function DonationIntentionManagement({
   return (
     <section className="view-panel module-page" aria-labelledby="intentions-title">
       <div className="module-heading">
-        <p className="eyebrow">钱/物/服帮助意向登记</p>
+        <p className="section-kicker">钱/物/服帮助意向登记</p>
         <h1 id="intentions-title">捐助意向管理</h1>
         <p>项目：{project.patientAlias} · {project.verifiedNeed}</p>
         <p className="review-note">平台仅登记意向，不在平台内收款。不自营公开募捐，不代收善款，不建立资金池。</p>
       </div>
+
+      <section className="prompt-card" aria-label="资源匹配提示词">
+        <span>资源匹配不是收款</span>
+        <p>
+          请将公众意向分类为钱、物、服，匹配项目真实需要，并生成机构联系话术。不得生成支付入口，不得承诺受助结果。
+        </p>
+      </section>
 
       <section className="intentions-layout" aria-label="捐助意向工作区">
         <div className="form-grid intention-form">

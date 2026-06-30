@@ -23,12 +23,19 @@ export function AidApplicationEntry({ application }: AidApplicationEntryProps) {
   return (
     <section className="view-panel module-page" aria-labelledby="application-title">
       <div className="module-heading">
-        <p className="eyebrow">低门槛求助材料整理 · 虚构/脱敏 demo</p>
+        <p className="section-kicker">低门槛求助材料整理</p>
         <h1 id="application-title">求助申请入口</h1>
         <p>
           面向家属、志愿者或机构工作人员。AI 只把材料整理成机构可复核的申请包，不自动批准救助。
         </p>
       </div>
+
+      <section className="prompt-card" aria-label="AI 整理提示词">
+        <span>AI 整理提示词</span>
+        <p>
+          请只使用申请人提供的虚构/脱敏信息，将叙事整理为机构复核用档案，列出缺失材料、金额矛盾和隐私风险。不得给出医疗建议，不得判断是否批准救助。
+        </p>
+      </section>
 
       <form className="form-grid" onSubmit={(event) => event.preventDefault()}>
         <label>
@@ -130,6 +137,7 @@ export function AidApplicationEntry({ application }: AidApplicationEntryProps) {
             </div>
           </div>
           <p className="review-note">{caseFile.privacyHints.join(' ')}</p>
+          <p className="review-note">人工复核前不可公开。</p>
         </section>
       )}
     </section>

@@ -34,14 +34,21 @@ export function FourDiscernmentWorkbench({ application, onDecision }: FourDiscer
   return (
     <section className="view-panel module-page" aria-labelledby="workbench-title">
       <div className="module-heading">
-        <p className="eyebrow">机构人工复核工作台</p>
+        <p className="section-kicker">机构人工复核工作台</p>
         <h1 id="workbench-title">机构四辨工作台</h1>
         <p>AI 仅生成证据结构、风险提示、优先级和复核清单。最终判断由机构工作人员完成。</p>
       </div>
 
+      <section className="prompt-card" aria-label="AI 四辨提示词">
+        <span>AI 输出不是结论，是复核材料</span>
+        <p>
+          请从伤害风险、材料可信度、资源优先级和属地协作四个维度输出可追溯证据、风险解释和人工 checklist。所有决策按钮只记录工作人员动作。
+        </p>
+      </section>
+
       <section className="case-summary" aria-label="待审案例摘要">
         <div>
-          <p className="eyebrow">{application.patientAlias} · {application.hospitalRegion}</p>
+          <p className="section-kicker">{application.patientAlias} · {application.hospitalRegion}</p>
           <h2>{application.disease}</h2>
           <p>{application.treatmentStage}</p>
         </div>

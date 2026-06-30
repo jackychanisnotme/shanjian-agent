@@ -35,19 +35,53 @@ export default function App() {
     <AppShell view={view} onNavigate={setView}>
       {view === 'home' && (
         <div className="view-panel public-home">
-          <section className="home-heading" aria-labelledby="home-title">
-            <div className="home-heading-copy">
-              <p className="eyebrow">机构项目系统 · 虚构/脱敏演示数据</p>
-              <h1 id="home-title">公众项目展示</h1>
+          <section className="home-hero" aria-labelledby="home-title">
+            <div className="home-hero-copy">
+              <p className="section-kicker">善见 Agent · 公益机构项目系统</p>
+              <h1 id="home-title">让善意先被核验，再抵达</h1>
               <p>
-                展示经机构审核后的大病救助项目、救助进展和成果反馈。公众在这里了解真实需要，并提交钱、物、服三类帮助意向。
+                参考优秀非营利网站的信息架构，把大病救助项目做成可阅读、可追踪、可复核的公共项目页。
               </p>
+              <div className="hero-actions" aria-label="核心操作">
+                <button className="primary-button" type="button" onClick={() => setView('application')}>
+                  提交求助申请
+                </button>
+                <button className="secondary-button" type="button" onClick={() => setView('workbench')}>
+                  查看机构复核
+                </button>
+              </div>
             </div>
             <HomeVisual />
           </section>
+
+          <section className="home-intro-grid" aria-label="产品定位">
+            <article>
+              <span>01</span>
+              <h2>公开展示</h2>
+              <p>公众先看到脱敏项目事实、真实需要、救助进展和反馈草稿，而不是情绪化募捐文案。</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h2>项目核验路径</h2>
+              <p>求助材料进入机构工作台，AI 只整理证据、风险和缺失项，最终由工作人员复核。</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h2>尊严与选择</h2>
+              <p>帮助意向按钱、物、服匹配受助人真实需要，避免把所有善意都压成单一现金。</p>
+            </article>
+          </section>
+
           <ComplianceNotice />
           <MetricStrip />
-          <section className="home-grid" aria-label="公众项目列表与详情">
+
+          <section className="project-section" aria-labelledby="public-project-title">
+            <div className="section-heading">
+              <p className="section-kicker">公开项目索引</p>
+              <h2 id="public-project-title">公众项目展示</h2>
+              <p>选择一个脱敏案例，查看项目进展、证据摘要、AI 问项目和帮助意向入口。</p>
+            </div>
+            <div className="home-grid" aria-label="公众项目列表与详情">
             <div className="project-list" aria-label="项目列表">
               {state.projects.map((project) => (
                 <ProjectCard
@@ -62,6 +96,7 @@ export default function App() {
             <div className="project-workspace">
               <ProjectDetail project={selectedProject} onHelp={openHelpIntention} />
               <ProjectQuestionPanel project={selectedProject} />
+            </div>
             </div>
           </section>
         </div>
