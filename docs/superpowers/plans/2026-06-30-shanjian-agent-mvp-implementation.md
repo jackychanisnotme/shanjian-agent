@@ -1036,7 +1036,7 @@ git commit -m "feat: add app navigation and demo store"
 - Modify: `shanjian-agent/src/styles/global.css`
 - Modify: `shanjian-agent/tests/app-flow.test.tsx`
 
-- [ ] **Step 1: Extend app flow test for public home**
+- [x] **Step 1: Extend app flow test for public home**
 
 Add assertions:
 
@@ -1048,7 +1048,7 @@ expect(screen.getByRole('button', { name: /这个项目目前最需要什么/ })
 expect(screen.getByRole('button', { name: /我要帮助/ })).toBeInTheDocument();
 ```
 
-- [ ] **Step 2: Run test and verify failure**
+- [x] **Step 2: Run test and verify failure**
 
 Run:
 
@@ -1058,7 +1058,7 @@ npm test -- tests/app-flow.test.tsx
 
 Expected: FAIL because home components do not exist.
 
-- [ ] **Step 3: Create shell and home components**
+- [x] **Step 3: Create shell and home components**
 
 Implement components with these visible requirements:
 
@@ -1071,7 +1071,7 @@ Implement components with these visible requirements:
 
 Use lucide icons for buttons where useful: `HeartHandshake`, `ClipboardList`, `ShieldCheck`, `Inbox`.
 
-- [ ] **Step 4: Wire home components in App**
+- [x] **Step 4: Wire home components in App**
 
 The home page must render:
 
@@ -1087,7 +1087,7 @@ AI问项目
 
 Clicking `我要帮助` must switch to `捐助意向管理` and make the relevant project name visible at the top of that management view.
 
-- [ ] **Step 5: Verify responsive CSS**
+- [x] **Step 5: Verify responsive CSS**
 
 CSS requirements:
 
@@ -1095,7 +1095,7 @@ CSS requirements:
 - Mobile: topbar wraps, cards stack, no text overflow in buttons.
 - Use a restrained palette: warm neutral background, white panels, muted teal/sage accents, amber risk highlights, red only for high risk.
 
-- [ ] **Step 6: Verify and commit**
+- [x] **Step 6: Verify and commit**
 
 Run:
 

@@ -38,12 +38,12 @@ docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md
 
 ## Phase 3: Public Home
 
-- [ ] Show compliance notice.
-- [ ] Show project metrics.
-- [ ] Show de-identified project cards.
-- [ ] Show project detail and progress timeline.
-- [ ] Show AI问项目 questions and answers.
-- [ ] Show `我要帮助` as intention registration, not payment.
+- [x] Show compliance notice.
+- [x] Show project metrics.
+- [x] Show de-identified project cards.
+- [x] Show project detail and progress timeline.
+- [x] Show AI问项目 questions and answers.
+- [x] Show `我要帮助` as intention registration, not payment.
 
 ## Phase 4: Aid Application Entry
 
