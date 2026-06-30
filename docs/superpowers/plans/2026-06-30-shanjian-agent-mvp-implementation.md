@@ -21,7 +21,7 @@ Read these files before implementing:
 Build a new standalone app inside the current hackathon workspace:
 
 ```text
-/Users/pc/Documents/7.3黑客松/shanjian-agent
+/Users/pc/Documents/shanjian-7.3/shanjian-agent
 ```
 
 Hard product boundaries:
@@ -97,7 +97,7 @@ File responsibilities:
 Run:
 
 ```bash
-cd /Users/pc/Documents/7.3黑客松
+cd /Users/pc/Documents/shanjian-7.3
 npm create vite@latest shanjian-agent -- --template react-ts
 cd shanjian-agent
 npm install

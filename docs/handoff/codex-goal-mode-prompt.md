@@ -5,7 +5,7 @@ Copy this whole prompt into Codex goal mode.
 ```text
 目标：请根据本仓库中的设计规格、实施计划和任务清单，完整实现“善见 Agent”黑客松 MVP。
 
-工作目录：/Users/pc/Documents/7.3黑客松
+工作目录：/Users/pc/Documents/shanjian-7.3
 
 请先阅读：
 - docs/superpowers/specs/2026-06-30-shanjian-agent-mvp-design.md
@@ -16,7 +16,7 @@ Copy this whole prompt into Codex goal mode.
 
 必须遵守：
 1. 使用 docs/superpowers/plans/2026-06-30-shanjian-agent-mvp-implementation.md 作为主执行计划，逐项打勾推进。
-2. 在 /Users/pc/Documents/7.3黑客松/shanjian-agent 新建独立 Vite + React + TypeScript Web App。
+2. 在 /Users/pc/Documents/shanjian-7.3/shanjian-agent 新建独立 Vite + React + TypeScript Web App。
 3. 产品结构必须是：首页展示公众项目；右上角三个入口分别为“求助申请入口”“机构四辨工作台”“捐助意向管理”。
 4. 捐助功能只做“捐助/帮助意向登记”，不做真实支付，不做平台收款，不做资金池。
 5. Demo 使用虚构/脱敏大病救助案例，不上传或处理真实患者隐私数据。
