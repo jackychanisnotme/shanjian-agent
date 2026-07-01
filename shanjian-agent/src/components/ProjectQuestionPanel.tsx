@@ -1,5 +1,5 @@
 import { ShieldCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { answerProjectQuestion } from '../domain/agents';
 import type { ProjectAnswer, PublicProject } from '../domain/types';
 
@@ -15,6 +15,10 @@ const questions = [
 
 export function ProjectQuestionPanel({ project }: ProjectQuestionPanelProps) {
   const [answer, setAnswer] = useState<ProjectAnswer>(() => answerProjectQuestion(project, questions[0].prompt));
+
+  useEffect(() => {
+    setAnswer(answerProjectQuestion(project, questions[0].prompt));
+  }, [project]);
 
   return (
     <section className="question-panel" aria-labelledby="question-title">

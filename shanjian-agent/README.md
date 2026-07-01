@@ -20,6 +20,7 @@ npm run build
 
 - 首页第一屏是公众项目展示，不是营销 landing page。
 - 右上角三个入口分别是：求助申请入口、机构四辨工作台、捐助意向管理。
+- 主要界面有独立 URL 路径：`/projects`、`/apply`、`/workbench`、`/intentions`。
 - AI 功能由 deterministic local agent functions 实现，离线可演示，接口集中在 `src/domain/agents.ts`，后续可替换真实 LLM。
 - Demo 数据均为虚构/脱敏大病救助案例，不上传或处理真实患者隐私数据。
 - 捐助功能只做“捐助/帮助意向登记”，支持钱、物、服三类资源匹配，不做真实支付。

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { loadDemoState, saveDemoState } from './app/demoStore';
-import type { ViewKey } from './app/navigation';
+import { pathForView, viewFromPathname, type ViewKey } from './app/navigation';
 import { AppShell } from './components/AppShell';
 import { AidApplicationEntry } from './components/AidApplicationEntry';
 import { ComplianceNotice } from './components/ComplianceNotice';
@@ -14,13 +14,39 @@ import { ProjectQuestionPanel } from './components/ProjectQuestionPanel';
 import './styles/global.css';
 
 export default function App() {
-  const [view, setView] = useState<ViewKey>('home');
+  const [view, setView] = useState<ViewKey>(() => viewFromPathname(currentPathname()));
   const [state, setState] = useState(loadDemoState);
   const selectedProject = state.projects.find((project) => project.id === state.selectedProjectId) ?? state.projects[0];
 
   useEffect(() => {
+    const normalizedView = viewFromPathname(currentPathname());
+    const normalizedPath = pathForView(normalizedView);
+
+    setView(normalizedView);
+    if (currentPathname() !== normalizedPath) {
+      window.history.replaceState({}, '', normalizedPath);
+    }
+
+    function handlePopState() {
+      setView(viewFromPathname(currentPathname()));
+    }
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useEffect(() => {
     saveDemoState(state);
   }, [state]);
+
+  function navigate(nextView: ViewKey) {
+    setView(nextView);
+    const nextPath = pathForView(nextView);
+
+    if (currentPathname() !== nextPath) {
+      window.history.pushState({}, '', nextPath);
+    }
+  }
 
   function selectProject(projectId: string) {
     setState((current) => ({ ...current, selectedProjectId: projectId }));
@@ -28,13 +54,38 @@ export default function App() {
 
   function openHelpIntention(projectId: string) {
     selectProject(projectId);
-    setView('intentions');
+    navigate('intentions');
   }
 
   return (
-    <AppShell view={view} onNavigate={setView}>
+    <AppShell view={view} onNavigate={navigate}>
       {view === 'home' && (
         <div className="view-panel public-home">
+          <section className="project-section" aria-labelledby="public-project-title">
+            <div className="section-heading">
+              <p className="section-kicker">公开项目索引</p>
+              <h1 id="public-project-title">公众项目展示</h1>
+              <p>选择一个脱敏案例，查看项目进展、证据摘要、AI 问项目和帮助意向入口。</p>
+            </div>
+            <div className="home-grid" aria-label="公众项目列表与详情">
+              <div className="project-list" aria-label="项目列表">
+                {state.projects.map((project) => (
+                  <ProjectCard
+                    active={project.id === selectedProject.id}
+                    key={project.id}
+                    project={project}
+                    onHelp={openHelpIntention}
+                    onSelect={selectProject}
+                  />
+                ))}
+              </div>
+              <div className="project-workspace">
+                <ProjectDetail project={selectedProject} onHelp={openHelpIntention} />
+                <ProjectQuestionPanel project={selectedProject} />
+              </div>
+            </div>
+          </section>
+
           <section className="home-hero" aria-labelledby="home-title">
             <div className="home-hero-copy">
               <p className="section-kicker">善见 Agent · 公益机构项目系统</p>
@@ -43,10 +94,10 @@ export default function App() {
                 参考优秀非营利网站的信息架构，把大病救助项目做成可阅读、可追踪、可复核的公共项目页。
               </p>
               <div className="hero-actions" aria-label="核心操作">
-                <button className="primary-button" type="button" onClick={() => setView('application')}>
+                <button className="primary-button" type="button" onClick={() => navigate('application')}>
                   提交求助申请
                 </button>
-                <button className="secondary-button" type="button" onClick={() => setView('workbench')}>
+                <button className="secondary-button" type="button" onClick={() => navigate('workbench')}>
                   查看机构复核
                 </button>
               </div>
@@ -74,31 +125,6 @@ export default function App() {
 
           <ComplianceNotice />
           <MetricStrip />
-
-          <section className="project-section" aria-labelledby="public-project-title">
-            <div className="section-heading">
-              <p className="section-kicker">公开项目索引</p>
-              <h2 id="public-project-title">公众项目展示</h2>
-              <p>选择一个脱敏案例，查看项目进展、证据摘要、AI 问项目和帮助意向入口。</p>
-            </div>
-            <div className="home-grid" aria-label="公众项目列表与详情">
-            <div className="project-list" aria-label="项目列表">
-              {state.projects.map((project) => (
-                <ProjectCard
-                  active={project.id === selectedProject.id}
-                  key={project.id}
-                  project={project}
-                  onHelp={openHelpIntention}
-                  onSelect={selectProject}
-                />
-              ))}
-            </div>
-            <div className="project-workspace">
-              <ProjectDetail project={selectedProject} onHelp={openHelpIntention} />
-              <ProjectQuestionPanel project={selectedProject} />
-            </div>
-            </div>
-          </section>
         </div>
       )}
 
@@ -128,4 +154,9 @@ export default function App() {
       )}
     </AppShell>
   );
+}
+
+function currentPathname() {
+  if (typeof window === 'undefined') return '/projects';
+  return window.location.pathname;
 }

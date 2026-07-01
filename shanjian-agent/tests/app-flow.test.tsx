@@ -1,9 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import App from '../src/App';
 
 describe('Shanjian Agent flow', () => {
+  beforeEach(() => {
+    window.localStorage.removeItem?.('shanjian-agent-demo-state');
+    window.history.pushState({}, '', '/');
+  });
+
   it('starts on public project home and navigates to all three backends', async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -25,6 +30,7 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getByText(/不含可识别个人隐私/)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /求助申请入口/ }));
+    expect(window.location.pathname).toBe('/apply');
     expect(screen.getByRole('heading', { name: /求助申请入口/ })).toBeInTheDocument();
     expect(screen.getByLabelText(/病情摘要/)).toBeInTheDocument();
     expect(screen.getByLabelText(/费用缺口/)).toBeInTheDocument();
@@ -37,6 +43,7 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getByText(/人工复核前不可公开/)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /机构四辨工作台/ }));
+    expect(window.location.pathname).toBe('/workbench');
     expect(screen.getByRole('heading', { name: /机构四辨工作台/ })).toBeInTheDocument();
     expect(screen.getByText(/辨善恶/)).toBeInTheDocument();
     expect(screen.getByText(/辨真伪/)).toBeInTheDocument();
@@ -49,6 +56,7 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getByText(/已生成脱敏项目卡片/)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /捐助意向管理/ }));
+    expect(window.location.pathname).toBe('/intentions');
     expect(screen.getByRole('heading', { name: /捐助意向管理/ })).toBeInTheDocument();
     expect(screen.getByText(/平台仅登记意向/)).toBeInTheDocument();
     expect(screen.getByLabelText(/帮助类别/)).toBeInTheDocument();
@@ -60,8 +68,67 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getAllByText(/不在平台内收款/).length).toBeGreaterThan(0);
 
     await user.click(screen.getByRole('button', { name: /善见 Agent/ }));
+    expect(window.location.pathname).toBe('/projects');
     await user.click(screen.getAllByRole('button', { name: /我要帮助/ })[0]);
+    expect(window.location.pathname).toBe('/intentions');
     expect(screen.getByRole('heading', { name: /捐助意向管理/ })).toBeInTheDocument();
     expect(screen.getByText(/项目：患儿A/)).toBeInTheDocument();
+  });
+
+  it('opens section-specific URLs directly', () => {
+    window.history.pushState({}, '', '/workbench');
+
+    render(<App />);
+
+    expect(screen.getByRole('heading', { name: /机构四辨工作台/ })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /公众项目展示/ })).not.toBeInTheDocument();
+  });
+
+  it('uses edited aid application values when generating the institution package', async () => {
+    const user = userEvent.setup();
+    window.history.pushState({}, '', '/apply');
+    render(<App />);
+
+    await user.clear(screen.getByLabelText(/患者脱敏称呼/));
+    await user.type(screen.getByLabelText(/患者脱敏称呼/), '患儿Z');
+    await user.clear(screen.getByLabelText(/费用缺口/));
+    await user.type(screen.getByLabelText(/费用缺口/), '12345');
+
+    await user.click(screen.getByRole('button', { name: /生成机构申请包/ }));
+
+    const result = screen.getByRole('region', { name: /机构申请包/ });
+    expect(within(result).getByText(/患儿Z/)).toBeInTheDocument();
+    expect(within(result).getByText(/12,345元/)).toBeInTheDocument();
+  });
+
+  it('registers the edited donation intention instead of a canned one', async () => {
+    const user = userEvent.setup();
+    window.history.pushState({}, '', '/intentions');
+    render(<App />);
+
+    await user.selectOptions(screen.getByLabelText(/帮助类别/), 'services');
+    await user.selectOptions(screen.getByLabelText(/帮助类型/), 'policy_consultation');
+    await user.clear(screen.getByLabelText(/金额或资源说明/));
+    await user.type(screen.getByLabelText(/金额或资源说明/), '可提供周末医保政策咨询');
+    await user.clear(screen.getByLabelText(/城市\/地区/));
+    await user.type(screen.getByLabelText(/城市\/地区/), '广州');
+
+    await user.click(screen.getByRole('button', { name: /AI分类并生成跟进建议/ }));
+
+    expect(screen.getAllByText(/服/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/广州/)).toBeInTheDocument();
+    expect(screen.getByText(/可提供周末医保政策咨询/)).toBeInTheDocument();
+  });
+
+  it('refreshes AI project answers when the selected project changes', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(screen.getByText(/治疗费用缺口：巩固治疗阶段/)).toBeInTheDocument();
+
+    await user.click(screen.getAllByRole('button', { name: /查看详情/ })[1]);
+
+    expect(screen.getByText(/药品资源信息：需要机构确认/)).toBeInTheDocument();
+    expect(screen.queryByText(/治疗费用缺口：巩固治疗阶段/)).not.toBeInTheDocument();
   });
 });

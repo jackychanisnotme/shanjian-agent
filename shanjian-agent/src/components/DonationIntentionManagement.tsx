@@ -1,5 +1,5 @@
 import { HandHeart, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { classifyDonationIntention } from '../domain/agents';
 import type {
   DonationClassification,
@@ -46,17 +46,21 @@ export function DonationIntentionManagement({
   const [helpType, setHelpType] = useState<HelpType>('funding_intention');
   const [classification, setClassification] = useState<DonationClassification | null>(null);
 
-  function classify() {
+  function classify(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const selectedCategory = stringValue(formData, 'helpCategory', helpCategory) as HelpCategory;
+    const selectedHelpType = stringValue(formData, 'helpType', helpType) as HelpType;
     const intention: DonationIntention = {
       id: `intent-demo-${Date.now()}`,
       projectId: project.id,
-      helpCategory,
-      helpType,
-      amountOrResource: helpCategory === 'money' ? '愿意定向支持5000元，由机构联系确认' : '可提供与当前项目匹配的资源',
-      city: '深圳',
-      contact: 'demo@example.com',
-      receiptNeed: true,
-      message: '希望了解项目进展，并尊重受助人真实需要。',
+      helpCategory: selectedCategory,
+      helpType: selectedHelpType,
+      amountOrResource: stringValue(formData, 'amountOrResource', '愿意由机构联系确认帮助方式'),
+      city: stringValue(formData, 'city', '未填写地区'),
+      contact: stringValue(formData, 'contact', '未填写联系方式'),
+      receiptNeed: formData.has('receiptNeed'),
+      message: stringValue(formData, 'message', '希望了解项目进展，并尊重受助人真实需要。'),
       status: 'new',
     };
 
@@ -81,10 +85,10 @@ export function DonationIntentionManagement({
       </section>
 
       <section className="intentions-layout" aria-label="捐助意向工作区">
-        <div className="form-grid intention-form">
+        <form className="form-grid intention-form" onSubmit={classify}>
           <label>
             帮助类别
-            <select value={helpCategory} onChange={(event) => setHelpCategory(event.target.value as HelpCategory)}>
+            <select name="helpCategory" value={helpCategory} onChange={(event) => setHelpCategory(event.target.value as HelpCategory)}>
               {categoryOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
@@ -92,7 +96,7 @@ export function DonationIntentionManagement({
           </label>
           <label>
             帮助类型
-            <select value={helpType} onChange={(event) => setHelpType(event.target.value as HelpType)}>
+            <select name="helpType" value={helpType} onChange={(event) => setHelpType(event.target.value as HelpType)}>
               {helpTypeOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
@@ -100,29 +104,29 @@ export function DonationIntentionManagement({
           </label>
           <label className="span-2">
             金额或资源说明
-            <textarea defaultValue="愿意定向支持5000元，由机构联系确认" rows={3} />
+            <textarea defaultValue="愿意定向支持5000元，由机构联系确认" name="amountOrResource" rows={3} />
           </label>
           <label>
             城市/地区
-            <input defaultValue="深圳" />
+            <input defaultValue="深圳" name="city" />
           </label>
           <label>
             联系方式
-            <input defaultValue="demo@example.com" />
+            <input defaultValue="demo@example.com" name="contact" />
           </label>
           <label className="check-line span-2">
-            <input defaultChecked type="checkbox" />
+            <input defaultChecked name="receiptNeed" type="checkbox" />
             需要机构提供票据/项目信息说明
           </label>
           <label className="span-2">
             留言
-            <textarea defaultValue="希望了解项目进展，并尊重受助人真实需要。" rows={3} />
+            <textarea defaultValue="希望了解项目进展，并尊重受助人真实需要。" name="message" rows={3} />
           </label>
-          <button className="primary-button form-submit" type="button" onClick={classify}>
+          <button className="primary-button form-submit" type="submit">
             <Sparkles aria-hidden="true" size={17} />
             AI分类并生成跟进建议
           </button>
-        </div>
+        </form>
 
         <aside className="result-panel">
           <div className="section-title-row">
@@ -174,4 +178,9 @@ function labelForCategory(category: HelpCategory) {
 
 function labelForHelpType(type: HelpType) {
   return helpTypeOptions.find((option) => option.value === type)?.label ?? type;
+}
+
+function stringValue(formData: FormData, key: string, fallback: string): string {
+  const value = formData.get(key);
+  return typeof value === 'string' && value.trim() ? value.trim() : fallback;
 }
