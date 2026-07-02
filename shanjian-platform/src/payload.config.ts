@@ -8,6 +8,7 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { AgentConfigs } from './collections/AgentConfigs'
 import { AidApplications } from './collections/AidApplications'
 import { CaseReviews } from './collections/CaseReviews'
 import { DonationIntentions } from './collections/DonationIntentions'
@@ -34,6 +35,7 @@ export default buildConfig({
   collections: [
     Users,
     Media,
+    AgentConfigs,
     AidApplications,
     CaseReviews,
     PublicProjects,

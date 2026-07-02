@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    'agent-configs': AgentConfig;
     'aid-applications': AidApplication;
     'case-reviews': CaseReview;
     'public-projects': PublicProject;
@@ -83,6 +84,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'agent-configs': AgentConfigsSelect<false> | AgentConfigsSelect<true>;
     'aid-applications': AidApplicationsSelect<false> | AidApplicationsSelect<true>;
     'case-reviews': CaseReviewsSelect<false> | CaseReviewsSelect<true>;
     'public-projects': PublicProjectsSelect<false> | PublicProjectsSelect<true>;
@@ -173,6 +175,38 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agent-configs".
+ */
+export interface AgentConfig {
+  id: number;
+  configName: string;
+  isActive?: boolean | null;
+  provider: 'openai_compatible' | 'deepseek' | 'qwen' | 'ollama' | 'custom';
+  /**
+   * 填写 OpenAI 兼容接口地址，例如 https://api.openai.com/v1 或本地模型网关地址。
+   */
+  baseUrl: string;
+  /**
+   * 仅后台服务端调用大模型时使用。不要把此字段传给前台页面、公开 API 或日志。
+   */
+  apiKey: string;
+  modelName: string;
+  temperature: number;
+  maxOutputTokens: number;
+  timeoutSeconds: number;
+  /**
+   * 后续细调四辨审核 Agent 时优先从这里读取基础提示词。
+   */
+  systemPrompt?: string | null;
+  /**
+   * 记录供应商账号、使用范围、测试结论或切换说明，避免填写无关敏感信息。
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -420,6 +454,10 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'agent-configs';
+        value: number | AgentConfig;
+      } | null)
+    | ({
         relationTo: 'aid-applications';
         value: number | AidApplication;
       } | null)
@@ -523,6 +561,25 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agent-configs_select".
+ */
+export interface AgentConfigsSelect<T extends boolean = true> {
+  configName?: T;
+  isActive?: T;
+  provider?: T;
+  baseUrl?: T;
+  apiKey?: T;
+  modelName?: T;
+  temperature?: T;
+  maxOutputTokens?: T;
+  timeoutSeconds?: T;
+  systemPrompt?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
