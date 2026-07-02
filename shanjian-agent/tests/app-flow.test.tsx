@@ -14,8 +14,8 @@ describe('Shanjian Agent flow', () => {
     render(<App />);
 
     expect(screen.getByRole('heading', { name: /公众项目展示/ })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /让善意先被核验，再抵达/ })).toBeInTheDocument();
-    expect(screen.getByText(/参考优秀非营利网站的信息架构/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /把救助个案变成可复核项目/ })).toBeInTheDocument();
+    expect(screen.getByText(/本地 Agent 串联材料整理/)).toBeInTheDocument();
     expect(screen.getByText(/不自营募捐/)).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /机构项目复核工作台示意图/ })).toBeInTheDocument();
     expect(screen.getByText(/项目核验路径/)).toBeInTheDocument();
@@ -28,6 +28,17 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getAllByRole('button', { name: /我要帮助/ }).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/透明反馈草稿/).length).toBeGreaterThan(0);
     expect(screen.getByText(/不含可识别个人隐私/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /获奖 Demo 中心/ })).toBeInTheDocument();
+    expect(screen.getByText(/混乱求助材料/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /材料智能处理台/ })).toBeInTheDocument();
+    expect(screen.getByText(/OCR抽取/)).toBeInTheDocument();
+    expect(screen.getAllByText(/金额矛盾/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/隐私脱敏/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/节省/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /运行本地LLM Agent/ })).toBeInTheDocument();
+    expect(screen.getAllByText(/评分抓手/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/商业落地/)).toBeInTheDocument();
+    expect(screen.getByText(/加分项/)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /求助申请入口/ }));
     expect(window.location.pathname).toBe('/apply');

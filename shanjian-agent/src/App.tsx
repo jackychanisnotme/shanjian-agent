@@ -3,6 +3,7 @@ import { loadDemoState, saveDemoState } from './app/demoStore';
 import { pathForView, viewFromPathname, type ViewKey } from './app/navigation';
 import { AppShell } from './components/AppShell';
 import { AidApplicationEntry } from './components/AidApplicationEntry';
+import { AwardDemoCenter } from './components/AwardDemoCenter';
 import { ComplianceNotice } from './components/ComplianceNotice';
 import { DonationIntentionManagement } from './components/DonationIntentionManagement';
 import { FourDiscernmentWorkbench } from './components/FourDiscernmentWorkbench';
@@ -61,6 +62,27 @@ export default function App() {
     <AppShell view={view} onNavigate={navigate}>
       {view === 'home' && (
         <div className="view-panel public-home">
+          <section className="home-hero" aria-labelledby="home-title">
+            <div className="home-hero-copy">
+              <p className="section-kicker">善见 Agent · 公益机构项目系统</p>
+              <h1 id="home-title">把救助个案变成可复核项目</h1>
+              <p>
+                本地 Agent 串联材料整理、四辨审核、脱敏公示、资源匹配和透明反馈。
+              </p>
+              <div className="hero-actions" aria-label="核心操作">
+                <button className="primary-button" type="button" onClick={() => navigate('application')}>
+                  提交求助申请
+                </button>
+                <button className="secondary-button" type="button" onClick={() => navigate('workbench')}>
+                  查看机构复核
+                </button>
+              </div>
+            </div>
+            <HomeVisual />
+          </section>
+
+          <AwardDemoCenter application={state.applications[0]} projects={state.projects} />
+
           <section className="project-section" aria-labelledby="public-project-title">
             <div className="section-heading">
               <p className="section-kicker">公开项目索引</p>
@@ -84,25 +106,6 @@ export default function App() {
                 <ProjectQuestionPanel project={selectedProject} />
               </div>
             </div>
-          </section>
-
-          <section className="home-hero" aria-labelledby="home-title">
-            <div className="home-hero-copy">
-              <p className="section-kicker">善见 Agent · 公益机构项目系统</p>
-              <h1 id="home-title">让善意先被核验，再抵达</h1>
-              <p>
-                参考优秀非营利网站的信息架构，把大病救助项目做成可阅读、可追踪、可复核的公共项目页。
-              </p>
-              <div className="hero-actions" aria-label="核心操作">
-                <button className="primary-button" type="button" onClick={() => navigate('application')}>
-                  提交求助申请
-                </button>
-                <button className="secondary-button" type="button" onClick={() => navigate('workbench')}>
-                  查看机构复核
-                </button>
-              </div>
-            </div>
-            <HomeVisual />
           </section>
 
           <section className="home-intro-grid" aria-label="产品定位">
