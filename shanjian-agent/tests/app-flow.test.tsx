@@ -1,12 +1,18 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../src/App';
 
 describe('Shanjian Agent flow', () => {
   beforeEach(() => {
     window.localStorage.removeItem?.('shanjian-agent-demo-state');
+    window.localStorage.removeItem?.('shanjian-agent-state-v2');
     window.history.pushState({}, '', '/');
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('local LLM offline in tests')));
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('starts on public project home and navigates to all three backends', async () => {
@@ -14,8 +20,6 @@ describe('Shanjian Agent flow', () => {
     render(<App />);
 
     expect(screen.getByRole('heading', { name: /公众项目展示/ })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /把救助个案变成可复核项目/ })).toBeInTheDocument();
-    expect(screen.getByText(/本地 Agent 串联材料整理/)).toBeInTheDocument();
     expect(screen.getByText(/不自营募捐/)).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /机构项目复核工作台示意图/ })).toBeInTheDocument();
     expect(screen.getByText(/项目核验路径/)).toBeInTheDocument();
@@ -28,17 +32,14 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getAllByRole('button', { name: /我要帮助/ }).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/透明反馈草稿/).length).toBeGreaterThan(0);
     expect(screen.getByText(/不含可识别个人隐私/)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /获奖 Demo 中心/ })).toBeInTheDocument();
-    expect(screen.getByText(/混乱求助材料/)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /材料智能处理台/ })).toBeInTheDocument();
-    expect(screen.getByText(/OCR抽取/)).toBeInTheDocument();
-    expect(screen.getAllByText(/金额矛盾/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/隐私脱敏/).length).toBeGreaterThan(0);
-    expect(screen.getByText(/节省/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /运行本地LLM Agent/ })).toBeInTheDocument();
-    expect(screen.getAllByText(/评分抓手/).length).toBeGreaterThan(0);
-    expect(screen.getByText(/商业落地/)).toBeInTheDocument();
-    expect(screen.getByText(/加分项/)).toBeInTheDocument();
+    expect(screen.queryByText(/获奖 Demo 中心/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Demo Day 冲奖版/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/评分抓手/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/商业落地/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/加分项/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/运行本地LLM Agent/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/本 demo/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/仅用于 demo/i)).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /求助申请入口/ }));
     expect(window.location.pathname).toBe('/apply');
@@ -52,6 +53,7 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getByText(/最新医疗费用发票/)).toBeInTheDocument();
     expect(screen.getAllByText(/治疗费用缺口/).length).toBeGreaterThan(0);
     expect(screen.getByText(/人工复核前不可公开/)).toBeInTheDocument();
+    expect(screen.queryByText(/demo 仅使用/i)).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /机构四辨工作台/ }));
     expect(window.location.pathname).toBe('/workbench');
@@ -61,8 +63,11 @@ describe('Shanjian Agent flow', () => {
     expect(screen.getByText(/辨大小/)).toBeInTheDocument();
     expect(screen.getByText(/辨远近/)).toBeInTheDocument();
     expect(screen.getByText(/AI 输出不是结论，是复核材料/)).toBeInTheDocument();
+    expect(screen.getByText(/LLM Base URL：http:\/\/127\.0\.0\.1:3000/)).toBeInTheDocument();
+    expect(screen.queryByText(/chat\/completions/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/仅用于 demo/i)).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /运行四辨审核/ }));
-    expect(screen.getByText(/人工核对最新发票/)).toBeInTheDocument();
+    expect(await screen.findByText(/人工核对最新发票/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /批准展示/ }));
     expect(screen.getByText(/已生成脱敏项目卡片/)).toBeInTheDocument();
 

@@ -60,7 +60,7 @@ export const demoAidApplication: AidApplication = {
       id: 'evidence-diagnosis',
       label: '模拟诊断摘要',
       status: 'received',
-      note: '显示疾病类型与治疗阶段，仅用于 demo。',
+      note: '显示疾病类型与治疗阶段，用于机构复核。',
     },
     {
       id: 'evidence-expense-list',
@@ -179,7 +179,7 @@ export const seedDonationIntentions: DonationIntention[] = [
     helpType: 'funding_intention',
     amountOrResource: '愿意支持5000元，由机构联系确认',
     city: '深圳',
-    contact: 'demo@example.com',
+    contact: 'contact@example.org',
     receiptNeed: true,
     message: '希望收到阶段反馈',
     status: 'new',

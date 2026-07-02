@@ -1,8 +1,9 @@
-import type { AidApplication, PublicProject } from './types';
+import { runFourDiscernment } from './agents';
+import type { AidApplication, FourDiscernmentReport } from './types';
 
 const defaultBaseUrl = 'http://127.0.0.1:3000';
 const defaultApiKey = 'sk-6';
-const defaultModel = 'local-charity-agent';
+const defaultModel = 'local-charity-reviewer';
 
 export interface LocalLlmConfigInput {
   apiKey?: string;
@@ -17,15 +18,14 @@ export interface LocalLlmConfig {
   model: string;
 }
 
-export interface AwardDemoAgentInput {
-  application: AidApplication;
-  judgeQuestion: string;
-  projects: PublicProject[];
+export interface LocalFourDiscernmentResult {
+  report: FourDiscernmentReport;
+  source: 'local-llm' | 'fallback';
 }
 
-export interface AwardDemoAgentResult {
-  content: string;
-  source: 'local-llm' | 'fallback';
+interface RunLocalFourDiscernmentOptions {
+  config?: LocalLlmConfigInput;
+  fetcher?: typeof fetch;
 }
 
 interface ChatCompletionResponse {
@@ -39,34 +39,26 @@ interface ChatCompletionResponse {
   };
 }
 
-interface RunAwardDemoOptions {
-  config?: LocalLlmConfigInput;
-  fetcher?: typeof fetch;
-}
-
 export function buildLocalLlmConfig(input: LocalLlmConfigInput = {}): LocalLlmConfig {
-  const normalizedBaseUrl = normalizeBaseUrl(input.baseUrl ?? defaultBaseUrl);
+  const baseUrl = normalizeBaseUrl(input.baseUrl ?? defaultBaseUrl);
 
   return {
     apiKey: input.apiKey ?? defaultApiKey,
-    baseUrl: normalizedBaseUrl,
-    chatCompletionsUrl: `${normalizedBaseUrl}/chat/completions`,
+    baseUrl,
+    chatCompletionsUrl: `${baseUrl}/v1/chat/completions`,
     model: input.model ?? defaultModel,
   };
 }
 
-export async function runAwardDemoAgent(
-  input: AwardDemoAgentInput,
-  options: RunAwardDemoOptions = {},
-): Promise<AwardDemoAgentResult> {
+export async function runLocalFourDiscernmentAgent(
+  application: AidApplication,
+  options: RunLocalFourDiscernmentOptions = {},
+): Promise<LocalFourDiscernmentResult> {
   const config = buildLocalLlmConfig(options.config);
   const fetcher = options.fetcher ?? globalThis.fetch;
 
   if (!fetcher) {
-    return {
-      content: buildFallbackDemoAnswer(input),
-      source: 'fallback',
-    };
+    return fallbackReport(application);
   }
 
   try {
@@ -78,16 +70,16 @@ export async function runAwardDemoAgent(
       },
       body: JSON.stringify({
         model: config.model,
-        temperature: 0.2,
+        temperature: 0.1,
         messages: [
           {
             role: 'system',
             content:
-              '你是慈善机构工作人员的获奖 Demo Agent。请从 Demo、用户价值、技术实现、创新性、商业潜力和路演表达六个评分维度输出极简建议。只基于输入材料，不编造真实患者信息，不给医疗建议。',
+              '你是公益机构四辨审核工作台的大脑。只做机构复核建议，不做募捐营销、公开传播或医疗诊断。请输出严格 JSON，字段为 goodAndHarm、truth、scale、proximity、humanChecklist。',
           },
           {
             role: 'user',
-            content: buildAwardDemoPrompt(input),
+            content: buildReviewPrompt(application),
           },
         ],
       }),
@@ -99,49 +91,76 @@ export async function runAwardDemoAgent(
       throw new Error(payload.error?.message ?? 'Local LLM request failed');
     }
 
-    const content = payload.choices?.[0]?.message?.content?.trim();
-    if (!content) {
-      throw new Error('Local LLM returned an empty answer');
+    const content = payload.choices?.[0]?.message?.content;
+    const report = parseFourDiscernmentReport(content);
+
+    if (!report) {
+      throw new Error('Local LLM returned an invalid four-discernment report');
     }
 
     return {
-      content,
+      report,
       source: 'local-llm',
     };
   } catch {
-    return {
-      content: buildFallbackDemoAnswer(input),
-      source: 'fallback',
-    };
+    return fallbackReport(application);
   }
 }
 
 function normalizeBaseUrl(baseUrl: string): string {
-  const withoutTrailingSlash = baseUrl.replace(/\/+$/, '');
-  return withoutTrailingSlash.endsWith('/v1') ? withoutTrailingSlash : `${withoutTrailingSlash}/v1`;
+  return baseUrl
+    .replace(/\/+$/, '')
+    .replace(/\/v1\/chat\/completions$/i, '')
+    .replace(/\/v1$/i, '');
 }
 
-function buildAwardDemoPrompt(input: AwardDemoAgentInput): string {
-  const projectSummaries = input.projects
-    .map((project) => `${project.patientAlias}：${project.verifiedNeed}，缺口${project.resourceGap}元，意向${project.matchedIntentions}条`)
-    .join('\n');
-
+function buildReviewPrompt(application: AidApplication): string {
   return [
-    `评委问题：${input.judgeQuestion}`,
-    `当前案例：${input.application.patientAlias}，${input.application.disease}，${input.application.treatmentStage}`,
-    `材料备注：${input.application.materialNotes.join('；')}`,
-    `真实需要：${input.application.requestedNeeds.map((need) => need.label).join('、')}`,
-    `公开项目：\n${projectSummaries}`,
-    '请输出：1. 5分钟 Demo 顺序；2. 技术亮点；3. 用户价值量化；4. 商业落地一句话。',
+    `案例：${application.patientAlias}`,
+    `疾病与阶段：${application.disease}，${application.treatmentStage}`,
+    `地区：${application.hospitalRegion}`,
+    `费用：总费用${application.expenseTotal}元，已支付${application.paidAmount}元，报销预估${application.reimbursementEstimate}元，缺口${application.remainingGap}元`,
+    `家庭负担：${application.familyBurden}`,
+    `材料备注：${application.materialNotes.join('；')}`,
+    `证据状态：${application.evidence.map((item) => `${item.label}/${item.status}/${item.note}`).join('；')}`,
+    `受助人需要：${application.requestedNeeds.map((need) => `${need.label}/${need.category}/${need.priority}`).join('；')}`,
+    '请按辨善恶、辨真伪、辨大小、辨远近生成可追溯证据、风险解释和人工复核清单。',
   ].join('\n');
 }
 
-function buildFallbackDemoAnswer(input: AwardDemoAgentInput): string {
-  return [
-    '本地LLM暂不可用，已使用离线获奖剧本。',
-    `先展示${input.application.patientAlias}的混乱求助材料，再一键生成机构申请包、证据链、隐私风险、脱敏项目页、钱物服匹配和反馈草稿。`,
-    '技术亮点：OpenAI-compatible 本地 Agent、证据来源提示、金额一致性检查、隐私脱敏边界和合规话术。',
-    '用户价值：把一线社工的材料整理、复核准备和反馈初稿从小时级压缩到分钟级。',
-    '商业落地：从大病救助项目切入，卖给慈善机构、基金会、医院社工部和政府购买服务项目。',
-  ].join('\n');
+function parseFourDiscernmentReport(content: string | undefined): FourDiscernmentReport | null {
+  if (!content) return null;
+
+  const raw = extractJson(content);
+
+  try {
+    const parsed = JSON.parse(raw) as FourDiscernmentReport;
+    if (
+      Array.isArray(parsed.goodAndHarm) &&
+      Array.isArray(parsed.truth) &&
+      parsed.scale &&
+      typeof parsed.scale.resourceGap === 'number' &&
+      Array.isArray(parsed.proximity) &&
+      Array.isArray(parsed.humanChecklist)
+    ) {
+      return parsed;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function extractJson(content: string): string {
+  const fenced = content.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fenced?.[1]) return fenced[1].trim();
+  return content.trim();
+}
+
+function fallbackReport(application: AidApplication): LocalFourDiscernmentResult {
+  return {
+    report: runFourDiscernment(application),
+    source: 'fallback',
+  };
 }

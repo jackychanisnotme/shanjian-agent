@@ -37,15 +37,20 @@ export function ProjectQuestionPanel({ project }: ProjectQuestionPanelProps) {
           </button>
         ))}
       </div>
-      <div className="answer-box">
-        <span>当前提示词</span>
-        <strong>{answer.question}</strong>
-        <p>{answer.answer}</p>
-        <div className="evidence-chips" aria-label="证据来源">
-          <span>证据来源</span>
-          {answer.sourceLabels.map((source) => (
-            <em key={source}>{source}</em>
-          ))}
+      <div className="chat-thread" aria-label="AI 项目问答">
+        <div className="message-bubble user-bubble">
+          <span>当前提示词</span>
+          <strong>{answer.question}</strong>
+        </div>
+        <div className="message-bubble ai-bubble">
+          <span>AI 回答</span>
+          <p>{answer.answer}</p>
+          <div className="evidence-chips" aria-label="证据来源">
+            <span>证据来源</span>
+            {answer.sourceLabels.map((source) => (
+              <em key={source}>{source}</em>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import { AlertTriangle, Gauge, Network, SearchCheck, ShieldCheck, Sparkles } from 'lucide-react';
 import { useState } from 'react';
-import { runFourDiscernment } from '../domain/agents';
+import { buildLocalLlmConfig, runLocalFourDiscernmentAgent } from '../domain/localLlmAgent';
 import type { AidApplication, FourDiscernmentReport, ReviewDecision } from '../domain/types';
 
 interface FourDiscernmentWorkbenchProps {
@@ -23,12 +23,23 @@ const decisionLabels: Array<{ decision: ReviewDecision; label: string }> = [
 ];
 
 export function FourDiscernmentWorkbench({ application, onDecision }: FourDiscernmentWorkbenchProps) {
+  const localLlmConfig = buildLocalLlmConfig();
   const [report, setReport] = useState<FourDiscernmentReport | null>(null);
+  const [reviewSource, setReviewSource] = useState<'local-llm' | 'fallback' | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
   const [decision, setDecision] = useState<ReviewDecision | null>(null);
 
   function chooseDecision(nextDecision: ReviewDecision) {
     setDecision(nextDecision);
     onDecision?.(nextDecision);
+  }
+
+  async function runReview() {
+    setIsRunning(true);
+    const result = await runLocalFourDiscernmentAgent(application);
+    setReport(result.report);
+    setReviewSource(result.source);
+    setIsRunning(false);
   }
 
   return (
@@ -44,6 +55,12 @@ export function FourDiscernmentWorkbench({ application, onDecision }: FourDiscer
         <p>
           请从伤害风险、材料可信度、资源优先级和属地协作四个维度输出可追溯证据、风险解释和人工 checklist。所有决策按钮只记录工作人员动作。
         </p>
+        <p className="review-note">LLM Base URL：{localLlmConfig.baseUrl}</p>
+        {reviewSource && (
+          <p className="review-note">
+            审核来源：{reviewSource === 'local-llm' ? '本地 LLM' : '本地规则兜底'}
+          </p>
+        )}
       </section>
 
       <section className="case-summary" aria-label="待审案例摘要">
@@ -76,9 +93,9 @@ export function FourDiscernmentWorkbench({ application, onDecision }: FourDiscer
         </div>
       </section>
 
-      <button className="primary-button form-submit" type="button" onClick={() => setReport(runFourDiscernment(application))}>
+      <button className="primary-button form-submit" disabled={isRunning} type="button" onClick={runReview}>
         <Sparkles aria-hidden="true" size={17} />
-        运行四辨审核
+        {isRunning ? '审核中' : '运行四辨审核'}
       </button>
 
       <section className="discernment-grid" aria-label="四辨输出">

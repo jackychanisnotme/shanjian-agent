@@ -10,7 +10,7 @@ export function HomeVisual() {
         width={1536}
       />
       <figcaption>
-        以脱敏材料、项目进展和资源地图为中心，所有公开动作都回到机构复核。
+        工作人员可在同一视图查看材料状态、项目进展和资源需求。
       </figcaption>
     </figure>
   );

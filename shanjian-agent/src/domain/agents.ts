@@ -60,7 +60,7 @@ export function structureAidApplication(application: AidApplication): CaseFile {
     ],
     privacyHints: [
       '公开材料不得出现学校、病房、电话、详细地址或可识别照片。',
-      'demo 仅使用虚构/脱敏材料，不上传真实患者隐私数据。',
+      '当前样例仅使用虚构/脱敏材料，不上传真实患者隐私数据。',
     ],
   };
 }

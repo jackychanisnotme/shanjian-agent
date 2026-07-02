@@ -112,7 +112,7 @@ export function DonationIntentionManagement({
           </label>
           <label>
             联系方式
-            <input defaultValue="demo@example.com" name="contact" />
+            <input defaultValue="contact@example.org" name="contact" />
           </label>
           <label className="check-line span-2">
             <input defaultChecked name="receiptNeed" type="checkbox" />

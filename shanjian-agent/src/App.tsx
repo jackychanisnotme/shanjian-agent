@@ -3,7 +3,6 @@ import { loadDemoState, saveDemoState } from './app/demoStore';
 import { pathForView, viewFromPathname, type ViewKey } from './app/navigation';
 import { AppShell } from './components/AppShell';
 import { AidApplicationEntry } from './components/AidApplicationEntry';
-import { AwardDemoCenter } from './components/AwardDemoCenter';
 import { ComplianceNotice } from './components/ComplianceNotice';
 import { DonationIntentionManagement } from './components/DonationIntentionManagement';
 import { FourDiscernmentWorkbench } from './components/FourDiscernmentWorkbench';
@@ -62,32 +61,18 @@ export default function App() {
     <AppShell view={view} onNavigate={navigate}>
       {view === 'home' && (
         <div className="view-panel public-home">
-          <section className="home-hero" aria-labelledby="home-title">
-            <div className="home-hero-copy">
-              <p className="section-kicker">善见 Agent · 公益机构项目系统</p>
-              <h1 id="home-title">把救助个案变成可复核项目</h1>
-              <p>
-                本地 Agent 串联材料整理、四辨审核、脱敏公示、资源匹配和透明反馈。
-              </p>
-              <div className="hero-actions" aria-label="核心操作">
-                <button className="primary-button" type="button" onClick={() => navigate('application')}>
-                  提交求助申请
-                </button>
-                <button className="secondary-button" type="button" onClick={() => navigate('workbench')}>
-                  查看机构复核
-                </button>
-              </div>
-            </div>
-            <HomeVisual />
-          </section>
-
-          <AwardDemoCenter application={state.applications[0]} projects={state.projects} />
-
           <section className="project-section" aria-labelledby="public-project-title">
-            <div className="section-heading">
-              <p className="section-kicker">公开项目索引</p>
-              <h1 id="public-project-title">公众项目展示</h1>
-              <p>选择一个脱敏案例，查看项目进展、证据摘要、AI 问项目和帮助意向入口。</p>
+            <div className="section-heading project-section-heading">
+              <div>
+                <p className="section-kicker">公开项目索引</p>
+                <h1 id="public-project-title">公众项目展示</h1>
+                <p>选择一个脱敏案例，查看项目进展、证据摘要、AI 问项目和帮助意向入口。</p>
+              </div>
+              <div className="public-principles" aria-label="公开展示原则">
+                <span>脱敏</span>
+                <span>核验</span>
+                <span>意向</span>
+              </div>
             </div>
             <div className="home-grid" aria-label="公众项目列表与详情">
               <div className="project-list" aria-label="项目列表">
@@ -107,6 +92,8 @@ export default function App() {
               </div>
             </div>
           </section>
+
+          <HomeVisual />
 
           <section className="home-intro-grid" aria-label="产品定位">
             <article>

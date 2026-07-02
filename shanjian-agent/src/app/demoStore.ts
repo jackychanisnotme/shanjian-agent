@@ -2,7 +2,7 @@ import { demoAidApplication, seedDonationIntentions, seedPublicProjects } from '
 import type { AidApplication, DonationIntention, PublicProject, ReviewDecision } from '../domain/types';
 import { loadJson, saveJson } from './storage';
 
-const storageKey = 'shanjian-agent-demo-state';
+const storageKey = 'shanjian-agent-state-v2';
 
 export interface DemoState {
   applications: AidApplication[];

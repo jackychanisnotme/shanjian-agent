@@ -9,6 +9,8 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ active, onHelp, onSelect, project }: ProjectCardProps) {
+  const progressValue = projectProgressValue(project.status);
+
   return (
     <article className={`project-card${active ? ' is-active' : ''}`}>
       <div className="card-header">
@@ -29,6 +31,22 @@ export function ProjectCard({ active, onHelp, onSelect, project }: ProjectCardPr
           <dd>{project.matchedIntentions}条</dd>
         </div>
       </dl>
+      <div className="project-progress">
+        <div className="progress-meta">
+          <span>项目进度</span>
+          <strong>{statusLabel(project.status)}</strong>
+        </div>
+        <div
+          aria-label={`${project.patientAlias}项目进度`}
+          aria-valuemax={100}
+          aria-valuemin={0}
+          aria-valuenow={progressValue}
+          className="progress-track"
+          role="progressbar"
+        >
+          <span style={{ width: `${progressValue}%` }} />
+        </div>
+      </div>
       <p className="latest-progress">最新进展：{project.progress[0]}</p>
       <div className="button-row">
         <button className="secondary-button" type="button" onClick={() => onSelect(project.id)}>
@@ -53,4 +71,16 @@ function statusLabel(status: PublicProject['status']) {
     completed: '阶段完成',
   };
   return labels[status];
+}
+
+function projectProgressValue(status: PublicProject['status']) {
+  const values: Record<PublicProject['status'], number> = {
+    urgent: 24,
+    awaiting_materials: 38,
+    in_treatment: 56,
+    receiving_intentions: 72,
+    completed: 100,
+  };
+
+  return values[status];
 }

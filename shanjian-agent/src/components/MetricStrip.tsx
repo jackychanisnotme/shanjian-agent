@@ -8,7 +8,7 @@ const metrics = [
 
 export function MetricStrip() {
   return (
-    <section className="metric-strip" aria-label="演示指标">
+    <section className="metric-strip" aria-label="运营概览">
       {metrics.map((metric) => {
         const Icon = metric.icon;
         return (
