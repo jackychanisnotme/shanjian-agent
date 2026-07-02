@@ -4,8 +4,8 @@ export function classifyDonationIntention(
   intention: DonationIntention,
   projects: PublicProject[],
 ): DonationClassification {
-  const project = projects.find((item) => item.id === intention.projectId) ?? projects[0]
-  const matchedNeeds = matchNeeds(intention, project.needs)
+  const project = intention.projectId ? projects.find((item) => item.id === intention.projectId) : undefined
+  const matchedNeeds = project ? matchNeeds(intention, project.needs) : []
   const categoryLabel = helpCategoryLabels[intention.helpCategory]
   const priority =
     matchedNeeds.some((need) => need.priority === 'high') ||
@@ -16,7 +16,7 @@ export function classifyDonationIntention(
   return {
     priority,
     categoryLabel,
-    matchingRationale: buildMatchingRationale(intention, matchedNeeds),
+    matchingRationale: buildMatchingRationale(intention, matchedNeeds, Boolean(project)),
     matchedNeedLabels: matchedNeeds.map((need) => need.label),
     tags: [
       categoryLabel,
@@ -24,8 +24,9 @@ export function classifyDonationIntention(
       intention.city,
       intention.receiptNeed ? 'needs_receipt_info' : 'no_receipt_need',
     ],
-    followUpScript:
-      '您好，感谢您对该救助项目表达帮助意向。平台仅登记意向、不在平台内收款，后续将由有资质机构工作人员与您确认支持方式、票据需求、隐私边界和项目反馈。',
+    followUpScript: project
+      ? '您好，感谢您对该救助项目表达帮助意向。平台仅登记意向、不在平台内收款，后续将由有资质机构工作人员与您确认支持方式、票据需求、隐私边界和项目反馈。'
+      : '您好，感谢您登记帮助意向。平台仅登记意向、不在平台内收款，机构工作人员会先匹配具体项目，再与您确认支持方式、隐私边界和后续反馈。',
   }
 }
 
@@ -49,7 +50,11 @@ function matchNeeds(intention: DonationIntention, needs: ResourceNeed[]): Resour
   return [...unique.values()].slice(0, 3)
 }
 
-function buildMatchingRationale(intention: DonationIntention, needs: ResourceNeed[]): string {
+function buildMatchingRationale(intention: DonationIntention, needs: ResourceNeed[], hasProject: boolean): string {
+  if (!hasProject) {
+    return '已进入通用意向池，需由机构工作人员根据地区、帮助类别和真实需要匹配具体项目。'
+  }
+
   const needText = needs.length > 0 ? needs.map((need) => need.label).join('、') : '项目登记的真实需要'
 
   if (intention.helpCategory === 'money') {

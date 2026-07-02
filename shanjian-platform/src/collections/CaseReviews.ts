@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { institutionOnlyAccess } from './access'
+
 export const CaseReviews: CollectionConfig = {
   slug: 'case-reviews',
   labels: {
@@ -10,7 +12,13 @@ export const CaseReviews: CollectionConfig = {
     useAsTitle: 'reviewTitle',
     group: '救助项目',
     defaultColumns: ['reviewTitle', 'application', 'decision', 'reviewSource', 'updatedAt'],
+    components: {
+      edit: {
+        beforeDocumentControls: ['/components/admin/WorkflowActionButtons#GeneratePublicProjectButton'],
+      },
+    },
   },
+  access: institutionOnlyAccess,
   fields: [
     { name: 'reviewTitle', type: 'text', label: '审核标题', required: true },
     {

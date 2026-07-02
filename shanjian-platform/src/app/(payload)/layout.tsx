@@ -6,6 +6,7 @@ import type { ServerFunctionClient } from 'payload'
 import { handleServerFunctions, RootLayout } from '@payloadcms/next/layouts'
 import React from 'react'
 
+import { adminServerFunctions } from '@/server/adminServerFunctions'
 import { importMap } from './admin/importMap.js'
 import './custom.scss'
 
@@ -19,6 +20,7 @@ const serverFunction: ServerFunctionClient = async function (args) {
     ...args,
     config,
     importMap,
+    serverFunctions: adminServerFunctions,
   })
 }
 

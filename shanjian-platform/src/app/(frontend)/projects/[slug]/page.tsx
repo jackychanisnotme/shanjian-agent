@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation'
 import React from 'react'
+import { getPayload } from 'payload'
 
 import { ProjectDetailView } from '../../../../components/public/ProjectDetailView'
-import { seedPublicProjects } from '../../../../domain/demoSeed'
+import config from '../../../../payload.config'
+import { findPublishedPublicProjectBySlug } from '../../../../server/publicProjects'
 
 interface ProjectDetailPageProps {
   params: Promise<{
@@ -12,7 +14,8 @@ interface ProjectDetailPageProps {
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const { slug } = await params
-  const project = seedPublicProjects.find((item) => item.slug === slug)
+  const payload = await getPayload({ config: await config })
+  const project = await findPublishedPublicProjectBySlug(payload, slug)
 
   if (!project) {
     notFound()

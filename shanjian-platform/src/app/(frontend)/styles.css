@@ -305,6 +305,30 @@ a:focus-visible {
   background: var(--base-0);
 }
 
+.empty-state,
+.success-panel {
+  width: min(1180px, calc(100% - 40px));
+  margin: 14px auto 0;
+  border: 1px solid var(--base-150);
+  border-radius: 4px;
+  background: var(--base-0);
+  padding: 20px;
+}
+
+.empty-state {
+  min-height: 160px;
+}
+
+.empty-state p,
+.success-panel p {
+  margin-bottom: 0;
+}
+
+.success-panel {
+  border-color: #bce1f8;
+  background: #edf5f9;
+}
+
 .collection-table {
   width: 100%;
   min-width: 980px;
@@ -557,6 +581,8 @@ li {
   .collection-toolbar,
   .compliance-strip,
   .collection-table-wrap,
+  .empty-state,
+  .success-panel,
   .detail-shell,
   .form-shell {
     width: min(100% - 24px, 1180px);

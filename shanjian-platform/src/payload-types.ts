@@ -338,7 +338,7 @@ export interface PublicProject {
  */
 export interface DonationIntention {
   id: number;
-  project: number | PublicProject;
+  project?: (number | null) | PublicProject;
   helpCategory: 'money' | 'materials' | 'services';
   helpType:
     | 'funding_intention'

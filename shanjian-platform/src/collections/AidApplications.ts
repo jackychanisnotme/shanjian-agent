@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { institutionOnlyAccess } from './access'
+
 export const AidApplications: CollectionConfig = {
   slug: 'aid-applications',
   labels: {
@@ -10,7 +12,13 @@ export const AidApplications: CollectionConfig = {
     useAsTitle: 'patientAlias',
     group: '救助项目',
     defaultColumns: ['patientAlias', 'status', 'region', 'remainingGap', 'updatedAt'],
+    components: {
+      edit: {
+        beforeDocumentControls: ['/components/admin/WorkflowActionButtons#GenerateCaseReviewButton'],
+      },
+    },
   },
+  access: institutionOnlyAccess,
   fields: [
     { name: 'patientAlias', type: 'text', label: '患者脱敏称呼', required: true },
     {

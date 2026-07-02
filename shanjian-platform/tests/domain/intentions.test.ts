@@ -24,4 +24,23 @@ describe('classifyDonationIntention', () => {
     expect(result.followUpScript).not.toContain('支付')
     expect(result.matchedNeedLabels.length).toBeGreaterThan(0)
   })
+
+  it('classifies general-pool intentions without defaulting to a public project', () => {
+    const result = classifyDonationIntention(
+      {
+        helpCategory: 'services',
+        helpType: 'volunteer',
+        amountOrResource: '每周可陪诊半天',
+        city: '广州',
+        contact: 'contact@example.org',
+        receiptNeed: false,
+        message: '希望由机构匹配合适项目',
+      },
+      seedPublicProjects,
+    )
+
+    expect(result.matchingRationale).toContain('通用意向池')
+    expect(result.followUpScript).toContain('机构工作人员会先匹配具体项目')
+    expect(result.matchedNeedLabels).toEqual([])
+  })
 })

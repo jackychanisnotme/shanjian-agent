@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { institutionOnlyAccess } from './access'
+
 export const DonationIntentions: CollectionConfig = {
   slug: 'donation-intentions',
   labels: {
@@ -11,13 +13,14 @@ export const DonationIntentions: CollectionConfig = {
     group: '资源跟进',
     defaultColumns: ['project', 'helpCategory', 'helpType', 'city', 'status'],
   },
+  access: institutionOnlyAccess,
   fields: [
     {
       name: 'project',
       type: 'relationship',
       label: '关联公开项目',
       relationTo: 'public-projects',
-      required: true,
+      required: false,
     },
     {
       name: 'helpCategory',

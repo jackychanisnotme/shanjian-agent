@@ -1,14 +1,12 @@
-'use client'
-
 import Link from 'next/link'
-import { useState, type FormEvent } from 'react'
 
-import { classifyDonationIntention } from '../../domain/intentions'
-import type { DonationClassification, HelpCategory, HelpType, PublicProject } from '../../domain/charity'
+import type { HelpCategory, HelpType, PublicProject } from '../../domain/charity'
 import { Button } from '../ui/Button'
 
 interface IntentionRegistrationFormProps {
-  project: PublicProject
+  action?: (formData: FormData) => void | Promise<void>
+  project?: PublicProject
+  submissionId?: string
 }
 
 const helpCategories: Array<{ label: string; value: HelpCategory }> = [
@@ -31,44 +29,39 @@ const helpTypes: Array<{ label: string; value: HelpType }> = [
   { label: '企业支持', value: 'corporate_support' },
 ]
 
-export function IntentionRegistrationForm({ project }: IntentionRegistrationFormProps) {
-  const [classification, setClassification] = useState<DonationClassification | null>(null)
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-
-    const result = classifyDonationIntention(
-      {
-        projectId: project.id,
-        helpCategory: fieldValue(formData, 'helpCategory', 'money') as HelpCategory,
-        helpType: fieldValue(formData, 'helpType', 'funding_intention') as HelpType,
-        amountOrResource: fieldValue(formData, 'amountOrResource', '愿意由机构联系确认帮助方式'),
-        city: fieldValue(formData, 'city', '未填写地区'),
-        contact: fieldValue(formData, 'contact', '未填写联系方式'),
-        receiptNeed: formData.has('receiptNeed'),
-        message: fieldValue(formData, 'message', '希望了解项目进展，并尊重受助人真实需要。'),
-      },
-      [project],
-    )
-
-    setClassification(result)
-  }
-
+export function IntentionRegistrationForm({ action, project, submissionId }: IntentionRegistrationFormProps) {
   return (
     <section className="form-shell" aria-labelledby="intention-title">
-      <Link className="back-link" href={`/projects/${project.slug}`}>
-        返回项目
-      </Link>
+      {project ? (
+        <Link className="back-link" href={`/projects/${project.slug}`}>
+          返回项目
+        </Link>
+      ) : (
+        <Link className="back-link" href="/projects">
+          返回公开项目
+        </Link>
+      )}
       <div className="form-heading">
-        <p className="section-label">{project.patientAlias} · {project.verifiedNeed}</p>
+        <p className="section-label">
+          {project ? `${project.patientAlias} · ${project.verifiedNeed}` : '通用意向池'}
+        </p>
         <h1 id="intention-title">登记帮助意向</h1>
         <p>
-          平台仅登记帮助意向，不在平台内收款。后续由有资质机构工作人员确认支持方式、票据需求、隐私边界和项目反馈。
+          {project
+            ? '平台仅登记帮助意向，不在平台内收款。后续由有资质机构工作人员确认支持方式、票据需求、隐私边界和项目反馈。'
+            : '平台仅登记帮助意向，不在平台内收款。机构工作人员会在后台匹配具体项目，再确认支持方式、隐私边界和项目反馈。'}
         </p>
       </div>
 
-      <form className="intention-form" onSubmit={handleSubmit}>
+      {submissionId && (
+        <section className="success-panel" role="status">
+          <h2>已提交，等待机构跟进</h2>
+          <p>后台记录编号：{submissionId}</p>
+        </section>
+      )}
+
+      <form action={action} className="intention-form">
+        {project && <input name="projectId" type="hidden" value={project.id} />}
         <label>
           帮助类别
           <select name="helpCategory" defaultValue="money">
@@ -110,25 +103,9 @@ export function IntentionRegistrationForm({ project }: IntentionRegistrationForm
           <textarea name="message" defaultValue="希望了解项目进展，并尊重受助人真实需要。" rows={3} />
         </label>
         <Button className="span-2" type="submit">
-          生成机构跟进建议
+          提交帮助意向
         </Button>
       </form>
-
-      {classification && (
-        <section className="classification-panel" aria-label="机构跟进建议">
-          <h2>机构跟进建议</h2>
-          <p>
-            帮助类别：<strong>{classification.categoryLabel}</strong> · 优先级：{classification.priority}
-          </p>
-          <p>{classification.matchingRationale}</p>
-          <p>{classification.followUpScript}</p>
-        </section>
-      )}
     </section>
   )
-}
-
-function fieldValue(formData: FormData, name: string, fallback: string): string {
-  const value = formData.get(name)
-  return typeof value === 'string' && value.trim() ? value.trim() : fallback
 }

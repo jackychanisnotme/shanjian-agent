@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { institutionOnlyAccess } from './access'
+
 export const FeedbackReports: CollectionConfig = {
   slug: 'feedback-reports',
   labels: {
@@ -11,6 +13,7 @@ export const FeedbackReports: CollectionConfig = {
     group: '资源跟进',
     defaultColumns: ['title', 'project', 'status', 'requiresInstitutionReview'],
   },
+  access: institutionOnlyAccess,
   fields: [
     { name: 'title', type: 'text', label: '报告标题', required: true },
     {

@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { isInstitutionUser, readPublishedOrInstitutionUser } from './access'
+
 export const PublicProjects: CollectionConfig = {
   slug: 'public-projects',
   labels: {
@@ -12,7 +14,10 @@ export const PublicProjects: CollectionConfig = {
     defaultColumns: ['patientAlias', 'status', 'region', 'resourceGap', 'isPublished'],
   },
   access: {
-    read: () => true,
+    read: readPublishedOrInstitutionUser,
+    create: isInstitutionUser,
+    update: isInstitutionUser,
+    delete: isInstitutionUser,
   },
   fields: [
     {

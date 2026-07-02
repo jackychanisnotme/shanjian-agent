@@ -122,7 +122,7 @@ export interface PublicProject {
 }
 
 export interface DonationIntention {
-  projectId: string
+  projectId?: string
   helpCategory: HelpCategory
   helpType: HelpType
   amountOrResource: string
