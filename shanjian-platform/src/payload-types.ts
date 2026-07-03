@@ -67,15 +67,15 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
-    media: Media;
-    'agent-configs': AgentConfig;
-    'agent-runtime-logs': AgentRuntimeLog;
     'aid-applications': AidApplication;
     'case-reviews': CaseReview;
     'public-projects': PublicProject;
     'donation-intentions': DonationIntention;
     'feedback-reports': FeedbackReport;
+    users: User;
+    media: Media;
+    'agent-configs': AgentConfig;
+    'agent-runtime-logs': AgentRuntimeLog;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -83,15 +83,15 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    'agent-configs': AgentConfigsSelect<false> | AgentConfigsSelect<true>;
-    'agent-runtime-logs': AgentRuntimeLogsSelect<false> | AgentRuntimeLogsSelect<true>;
     'aid-applications': AidApplicationsSelect<false> | AidApplicationsSelect<true>;
     'case-reviews': CaseReviewsSelect<false> | CaseReviewsSelect<true>;
     'public-projects': PublicProjectsSelect<false> | PublicProjectsSelect<true>;
     'donation-intentions': DonationIntentionsSelect<false> | DonationIntentionsSelect<true>;
     'feedback-reports': FeedbackReportsSelect<false> | FeedbackReportsSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    'agent-configs': AgentConfigsSelect<false> | AgentConfigsSelect<true>;
+    'agent-runtime-logs': AgentRuntimeLogsSelect<false> | AgentRuntimeLogsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -130,107 +130,6 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  name: string;
-  role: 'admin' | 'reviewer' | 'coordinator' | 'viewer';
-  organizationName: string;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "agent-configs".
- */
-export interface AgentConfig {
-  id: number;
-  configName: string;
-  isActive?: boolean | null;
-  provider: 'openai_compatible' | 'deepseek' | 'qwen' | 'ollama' | 'custom';
-  /**
-   * 填写 OpenAI 兼容接口地址，例如 https://api.openai.com/v1 或本地模型网关地址。
-   */
-  baseUrl: string;
-  /**
-   * 仅后台服务端调用大模型时使用。不要把此字段传给前台页面、公开 API 或日志。
-   */
-  apiKey: string;
-  modelName: string;
-  temperature: number;
-  maxOutputTokens: number;
-  timeoutSeconds: number;
-  /**
-   * 后续细调四辨审核 Agent 时优先从这里读取基础提示词。
-   */
-  systemPrompt?: string | null;
-  /**
-   * 记录供应商账号、使用范围、测试结论或切换说明，避免填写无关敏感信息。
-   */
-  notes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "agent-runtime-logs".
- */
-export interface AgentRuntimeLog {
-  id: number;
-  toolName: string;
-  safety: 'read' | 'write';
-  success: boolean;
-  durationMs: number;
-  /**
-   * 已脱敏和截断，不存储 API Key、Token、密码等敏感字段。
-   */
-  argsPreview?: string | null;
-  /**
-   * 已脱敏和截断，仅用于审计工具行为。
-   */
-  resultPreview?: string | null;
-  errorMessage?: string | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -275,12 +174,32 @@ export interface AidApplication {
     | number
     | boolean
     | null;
+  uploadedMaterials?: (number | Media)[] | null;
   rawNarrative: string;
   consentForInstitutionReview?: boolean | null;
   consentForDeidentifiedDisplay?: boolean | null;
   status: 'draft' | 'submitted' | 'needs_materials' | 'under_review' | 'approved' | 'rejected' | 'published';
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -447,6 +366,88 @@ export interface FeedbackReport {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name: string;
+  role: 'admin' | 'reviewer' | 'coordinator' | 'viewer';
+  organizationName: string;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agent-configs".
+ */
+export interface AgentConfig {
+  id: number;
+  configName: string;
+  isActive?: boolean | null;
+  provider: 'openai_compatible' | 'deepseek' | 'qwen' | 'ollama' | 'custom';
+  /**
+   * 填写 OpenAI 兼容接口地址，例如 https://api.openai.com/v1 或本地模型网关地址。
+   */
+  baseUrl: string;
+  /**
+   * 仅后台服务端调用大模型时使用。不要把此字段传给前台页面、公开 API 或日志。
+   */
+  apiKey: string;
+  modelName?: string | null;
+  temperature?: number | null;
+  maxOutputTokens: number;
+  timeoutSeconds: number;
+  /**
+   * 后续细调四辨审核 Agent 时优先从这里读取基础提示词。
+   */
+  systemPrompt?: string | null;
+  /**
+   * 记录供应商账号、使用范围、测试结论或切换说明，避免填写无关敏感信息。
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agent-runtime-logs".
+ */
+export interface AgentRuntimeLog {
+  id: number;
+  toolName: string;
+  safety: 'read' | 'write';
+  success: boolean;
+  durationMs: number;
+  /**
+   * 已脱敏和截断，不存储 API Key、Token、密码等敏感字段。
+   */
+  argsPreview?: string | null;
+  /**
+   * 已脱敏和截断，仅用于审计工具行为。
+   */
+  resultPreview?: string | null;
+  errorMessage?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -470,22 +471,6 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'agent-configs';
-        value: number | AgentConfig;
-      } | null)
-    | ({
-        relationTo: 'agent-runtime-logs';
-        value: number | AgentRuntimeLog;
-      } | null)
-    | ({
         relationTo: 'aid-applications';
         value: number | AidApplication;
       } | null)
@@ -504,6 +489,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'feedback-reports';
         value: number | FeedbackReport;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'agent-configs';
+        value: number | AgentConfig;
+      } | null)
+    | ({
+        relationTo: 'agent-runtime-logs';
+        value: number | AgentRuntimeLog;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -549,83 +550,6 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
- */
-export interface UsersSelect<T extends boolean = true> {
-  name?: T;
-  role?: T;
-  organizationName?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "agent-configs_select".
- */
-export interface AgentConfigsSelect<T extends boolean = true> {
-  configName?: T;
-  isActive?: T;
-  provider?: T;
-  baseUrl?: T;
-  apiKey?: T;
-  modelName?: T;
-  temperature?: T;
-  maxOutputTokens?: T;
-  timeoutSeconds?: T;
-  systemPrompt?: T;
-  notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "agent-runtime-logs_select".
- */
-export interface AgentRuntimeLogsSelect<T extends boolean = true> {
-  toolName?: T;
-  safety?: T;
-  success?: T;
-  durationMs?: T;
-  argsPreview?: T;
-  resultPreview?: T;
-  errorMessage?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "aid-applications_select".
  */
 export interface AidApplicationsSelect<T extends boolean = true> {
@@ -642,6 +566,7 @@ export interface AidApplicationsSelect<T extends boolean = true> {
   requestedNeeds?: T;
   materialNotes?: T;
   evidence?: T;
+  uploadedMaterials?: T;
   rawNarrative?: T;
   consentForInstitutionReview?: T;
   consentForDeidentifiedDisplay?: T;
@@ -722,6 +647,83 @@ export interface FeedbackReportsSelect<T extends boolean = true> {
   draft?: T;
   requiresInstitutionReview?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  organizationName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agent-configs_select".
+ */
+export interface AgentConfigsSelect<T extends boolean = true> {
+  configName?: T;
+  isActive?: T;
+  provider?: T;
+  baseUrl?: T;
+  apiKey?: T;
+  modelName?: T;
+  temperature?: T;
+  maxOutputTokens?: T;
+  timeoutSeconds?: T;
+  systemPrompt?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agent-runtime-logs_select".
+ */
+export interface AgentRuntimeLogsSelect<T extends boolean = true> {
+  toolName?: T;
+  safety?: T;
+  success?: T;
+  durationMs?: T;
+  argsPreview?: T;
+  resultPreview?: T;
+  errorMessage?: T;
   updatedAt?: T;
   createdAt?: T;
 }

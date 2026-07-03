@@ -29,3 +29,118 @@
   justify-content: flex-end;
   margin-bottom: 8px;
 }
+
+.shanjian-readable-panel {
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  padding: 16px;
+}
+
+.shanjian-readable-panel__header {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.shanjian-readable-panel__header p {
+  color: var(--theme-elevation-600);
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.shanjian-readable-panel__header h3 {
+  font-size: 18px;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.shanjian-readable-meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.shanjian-readable-rationale {
+  background: var(--theme-elevation-50);
+  border: 1px solid var(--theme-elevation-100);
+  border-radius: 6px;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+}
+
+.shanjian-readable-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.shanjian-readable-card {
+  border: 1px solid var(--theme-elevation-100);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.shanjian-readable-card h4 {
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+
+.shanjian-readable-list,
+.shanjian-readable-plain-list {
+  display: grid;
+  gap: 8px;
+  list-style-position: inside;
+  margin: 0;
+  padding: 0;
+}
+
+.shanjian-readable-list {
+  list-style: none;
+}
+
+.shanjian-readable-list li {
+  align-items: flex-start;
+  border-top: 1px solid var(--theme-elevation-100);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding-top: 8px;
+}
+
+.shanjian-readable-list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.shanjian-readable-list strong {
+  display: block;
+}
+
+.shanjian-readable-list span:not(.shanjian-readable-badge) {
+  color: var(--theme-elevation-700);
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 3px;
+}
+
+.shanjian-readable-badge {
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 999px;
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.shanjian-readable-empty {
+  color: var(--theme-elevation-600);
+  margin: 0;
+}

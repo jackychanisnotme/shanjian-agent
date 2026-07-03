@@ -10,7 +10,9 @@ describe('Agent tool safety classifier', () => {
 
     expect(getAgentToolSafety('terminal_run')).toBe('write')
     expect(getAgentToolSafety('filesystem_write_file')).toBe('write')
+    expect(getAgentToolSafety('case_review_generate_suggestions')).toBe('write')
     expect(isAgentToolWriteOperation('filesystem_write_file')).toBe(true)
     expect(isAgentToolWriteOperation('filesystem_read_file')).toBe(false)
+    expect(isAgentToolWriteOperation('case_review_generate_suggestions')).toBe(true)
   })
 })

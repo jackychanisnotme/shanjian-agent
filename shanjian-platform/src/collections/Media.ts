@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { institutionOnlyAccess } from './access'
+
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: {
@@ -9,9 +11,7 @@ export const Media: CollectionConfig = {
   admin: {
     group: '系统管理',
   },
-  access: {
-    read: () => true,
-  },
+  access: institutionOnlyAccess,
   fields: [
     {
       name: 'alt',

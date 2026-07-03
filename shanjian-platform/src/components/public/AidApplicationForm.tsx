@@ -1,11 +1,23 @@
 import Link from 'next/link'
 
+import { NEED_TYPE_LABELS, type NeedType } from '../../domain/charity'
 import { Button } from '../ui/Button'
 
 interface AidApplicationFormProps {
   action?: (formData: FormData) => void | Promise<void>
   submissionId?: string
 }
+
+const PUBLIC_NEED_TYPES: NeedType[] = [
+  'treatment_cost',
+  'medicine',
+  'nutrition',
+  'accommodation',
+  'transportation',
+  'escort',
+  'policy_consultation',
+  'psychological_support',
+]
 
 export function AidApplicationForm({ action, submissionId }: AidApplicationFormProps) {
   return (
@@ -16,7 +28,9 @@ export function AidApplicationForm({ action, submissionId }: AidApplicationFormP
       <div className="form-heading">
         <p className="section-label">求助申请 · 机构复核入口</p>
         <h1 id="application-title">提交求助申请</h1>
-        <p>提交后进入机构后台待复核。平台只整理材料和真实需要，不处理资金，由有资质机构完成审核与后续决策。</p>
+        <p>
+          提交后进入机构后台待复核。平台只整理材料和真实需要，不处理资金，由有资质机构完成审核与后续决策。
+        </p>
       </div>
 
       {submissionId && (
@@ -26,7 +40,7 @@ export function AidApplicationForm({ action, submissionId }: AidApplicationFormP
         </section>
       )}
 
-      <form action={action} className="intention-form">
+      <form action={action} className="intention-form" encType="multipart/form-data">
         <label>
           患者脱敏称呼
           <input name="patientAlias" defaultValue="患儿A" required />
@@ -41,57 +55,71 @@ export function AidApplicationForm({ action, submissionId }: AidApplicationFormP
           </select>
         </label>
         <label className="span-2">
-          病情摘要
-          <textarea name="diseaseSummary" defaultValue="儿童血液病治疗支持" rows={3} required />
-        </label>
-        <label>
-          治疗阶段
-          <input name="treatmentStage" defaultValue="连续治疗与复诊阶段" required />
-        </label>
-        <label>
-          地区
-          <input name="region" defaultValue="华南" required />
-        </label>
-        <label>
-          总费用
-          <input name="expenseTotal" defaultValue="186000" inputMode="numeric" required />
-        </label>
-        <label>
-          已支付金额
-          <input name="paidAmount" defaultValue="76000" inputMode="numeric" required />
-        </label>
-        <label>
-          医保/商保预估
-          <input name="reimbursementEstimate" defaultValue="52000" inputMode="numeric" required />
-        </label>
-        <label className="span-2">
-          家庭负担说明
-          <textarea name="familyBurden" defaultValue="家庭主要收入来自临时务工，前期治疗已产生借款。" rows={3} required />
-        </label>
-        <label className="span-2">
-          受助人真实需要
+          病情与治疗情况
           <textarea
-            name="requestedNeeds"
-            defaultValue={'治疗费用缺口\n医保/救助政策咨询\n复诊交通协助'}
+            name="conditionAndTreatment"
+            defaultValue="儿童血液病治疗中，近期需要连续复诊和用药。"
+            rows={4}
+            required
+          />
+        </label>
+        <label>
+          所在城市/地区
+          <input name="region" defaultValue="广州" required />
+        </label>
+        <label>
+          目前最主要的费用缺口/压力
+          <textarea
+            name="expensePressure"
+            defaultValue="后续复诊和药费压力较大，已向亲友借款。"
             rows={4}
             required
           />
         </label>
         <label className="span-2">
-          材料说明
-          <textarea name="materialNotes" defaultValue={'已有诊断摘要\n缺少最新医疗费用发票'} rows={3} required />
+          家庭情况与求助原因
+          <textarea
+            name="familySituation"
+            defaultValue="父亲临时务工，母亲主要陪护，家庭收入不稳定。"
+            rows={4}
+            required
+          />
         </label>
-        <label className="check-line">
-          <input name="evidenceDiagnosis" type="checkbox" defaultChecked />
-          已有诊断摘要
-        </label>
-        <label className="check-line">
-          <input name="evidenceLatestInvoice" type="checkbox" />
-          最新医疗费用发票待补充
-        </label>
+        <fieldset className="span-2 need-fieldset">
+          <legend>需要哪些帮助</legend>
+          <div className="need-options">
+            {PUBLIC_NEED_TYPES.map((type) => (
+              <label key={type}>
+                <input
+                  defaultChecked={type === 'treatment_cost' || type === 'policy_consultation'}
+                  name="needTypes"
+                  type="checkbox"
+                  value={type}
+                />
+                {NEED_TYPE_LABELS[type]}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <div className="span-2 upload-field">
+          <label htmlFor="materialFiles">上传证明材料</label>
+          <p>可上传诊断摘要、医疗费用发票、医保或商保回执等材料，提交后仅供机构后台复核。</p>
+          <input
+            accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*"
+            id="materialFiles"
+            multiple
+            name="materialFiles"
+            type="file"
+          />
+        </div>
         <label className="span-2">
-          原始叙事
-          <textarea name="rawNarrative" defaultValue="公开材料需要删除学校、病房和联系方式。" rows={4} required />
+          补充说明
+          <textarea
+            name="additionalNotes"
+            defaultValue="希望公开时隐去学校信息和详细住址。"
+            rows={4}
+            required
+          />
         </label>
         <label className="check-line">
           <input name="consentForInstitutionReview" type="checkbox" defaultChecked />

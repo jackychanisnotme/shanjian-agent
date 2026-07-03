@@ -31,6 +31,36 @@ export async function getActiveAgentConfig(payload: Payload): Promise<ActiveAgen
   const config = configs.docs[0]
   if (!config) return null
 
+  return toActiveAgentConfig(config)
+}
+
+export async function getAgentConfigById(
+  payload: Payload,
+  configId: number | string,
+): Promise<ActiveAgentConfig | null> {
+  const config = await payload.findByID({
+    collection: 'agent-configs',
+    id: configId,
+  })
+
+  if (!config) return null
+
+  return toActiveAgentConfig(config)
+}
+
+function toActiveAgentConfig(config: {
+  apiKey: string
+  baseUrl: string
+  configName: string
+  id: number | string
+  isActive?: boolean | null
+  maxOutputTokens?: number | null
+  modelName?: string | null
+  provider: string
+  systemPrompt?: string | null
+  temperature?: number | null
+  timeoutSeconds?: number | null
+}): ActiveAgentConfig {
   return {
     id: config.id,
     configName: config.configName,
@@ -38,8 +68,8 @@ export async function getActiveAgentConfig(payload: Payload): Promise<ActiveAgen
     provider: config.provider,
     baseUrl: config.baseUrl,
     apiKey: config.apiKey,
-    modelName: config.modelName,
-    temperature: config.temperature,
+    modelName: config.modelName || 'gpt-4.1-mini',
+    temperature: config.temperature ?? 0.2,
     maxOutputTokens: config.maxOutputTokens,
     timeoutSeconds: config.timeoutSeconds,
     systemPrompt: config.systemPrompt,

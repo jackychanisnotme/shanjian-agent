@@ -36,15 +36,27 @@ describe('Payload admin localization', () => {
 })
 
 function fieldLabel(collection: { fields: unknown[] }, name: string): unknown {
-  const field = collection.fields.find((item) => isNamedField(item) && item.name === name)
+  const field = findField(collection.fields, name)
   return isLabeledField(field) ? field.label : undefined
 }
 
 function selectOptionLabel(collection: { fields: unknown[] }, name: string, value: string): unknown {
-  const field = collection.fields.find((item) => isNamedField(item) && item.name === name)
+  const field = findField(collection.fields, name)
   if (!isSelectField(field)) return undefined
 
   return field.options.find((option) => option.value === value)?.label
+}
+
+function findField(fields: unknown[], name: string): unknown {
+  for (const field of fields) {
+    if (isNamedField(field) && field.name === name) return field
+    if (hasNestedFields(field)) {
+      const nested = findField(field.fields, name)
+      if (nested) return nested
+    }
+  }
+
+  return undefined
 }
 
 function isNamedField(field: unknown): field is { name: string } {
@@ -57,4 +69,8 @@ function isLabeledField(field: unknown): field is { label: string } {
 
 function isSelectField(field: unknown): field is { options: Array<{ label: string; value: string }> } {
   return typeof field === 'object' && field !== null && 'options' in field && Array.isArray(field.options)
+}
+
+function hasNestedFields(field: unknown): field is { fields: unknown[] } {
+  return typeof field === 'object' && field !== null && 'fields' in field && Array.isArray(field.fields)
 }

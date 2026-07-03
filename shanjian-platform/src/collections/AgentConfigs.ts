@@ -66,7 +66,6 @@ export const AgentConfigs: CollectionConfig = {
       type: 'text',
       label: '模型名称',
       defaultValue: 'gpt-4.1-mini',
-      required: true,
     },
     {
       name: 'temperature',
@@ -75,7 +74,6 @@ export const AgentConfigs: CollectionConfig = {
       defaultValue: 0.2,
       min: 0,
       max: 2,
-      required: true,
     },
     {
       name: 'maxOutputTokens',

@@ -1,13 +1,14 @@
 import type { Payload } from 'payload'
 
 import {
+  NEED_TYPE_LABELS,
   type AidApplication as DomainAidApplication,
   type DonationIntention,
+  type EvidenceItem,
   type HelpCategory,
   type NeedType,
   type ResourceNeed,
 } from '../domain/charity'
-import { buildFourDiscernmentReport } from '../domain/discernment'
 import { classifyDonationIntention } from '../domain/intentions'
 import type {
   AidApplication as PayloadAidApplication,
@@ -15,41 +16,67 @@ import type {
   DonationIntention as PayloadDonationIntention,
   PublicProject,
 } from '../payload-types'
-import { asEvidenceItems, asResourceNeeds, asStringArray, payloadPublicProjectToDomain } from './publicProjects'
+import {
+  asEvidenceItems,
+  asResourceNeeds,
+  asStringArray,
+  payloadPublicProjectToDomain,
+} from './publicProjects'
 
 type WorkflowPayload = Pick<Payload, 'create' | 'find' | 'findByID' | 'update'>
+
+interface UploadedMaterial {
+  filename: string
+  mediaId: number
+  mimeType: string
+}
 
 export async function createAidApplicationFromForm(
   payload: WorkflowPayload,
   formData: FormData,
 ): Promise<PayloadAidApplication> {
+  const patientAlias = textField(formData, 'patientAlias', '未命名求助申请')
   const expenseTotal = numberField(formData, 'expenseTotal')
   const paidAmount = numberField(formData, 'paidAmount')
   const reimbursementEstimate = numberField(formData, 'reimbursementEstimate')
   const remainingGap = Math.max(0, expenseTotal - paidAmount - reimbursementEstimate)
+  const uploadedMaterials = await uploadMaterialFiles(payload, formData, patientAlias)
 
   return payload.create({
     collection: 'aid-applications',
     data: {
-      patientAlias: textField(formData, 'patientAlias', '未命名求助申请'),
+      patientAlias,
       applicantRole: selectField(formData, 'applicantRole', [
         'family',
         'patient',
         'volunteer',
         'institution_staff',
       ]),
-      diseaseSummary: textField(formData, 'diseaseSummary', '待机构补充病情摘要'),
-      treatmentStage: textField(formData, 'treatmentStage', '待机构确认治疗阶段'),
+      diseaseSummary: firstTextField(
+        formData,
+        ['conditionAndTreatment', 'diseaseSummary'],
+        '待机构补充病情摘要',
+      ),
+      treatmentStage: textField(formData, 'treatmentStage', '待机构复核治疗阶段'),
       region: textField(formData, 'region', '未填写地区'),
       expenseTotal,
       paidAmount,
       reimbursementEstimate,
       remainingGap,
-      familyBurden: textField(formData, 'familyBurden', '待机构访谈确认家庭负担'),
-      requestedNeeds: parseNeeds(textField(formData, 'requestedNeeds', '治疗费用缺口')),
-      materialNotes: splitLines(textField(formData, 'materialNotes', '待补充材料说明')),
-      evidence: buildEvidence(formData),
-      rawNarrative: textField(formData, 'rawNarrative', '待机构补充原始叙事'),
+      familyBurden: firstTextField(
+        formData,
+        ['familySituation', 'familyBurden'],
+        '待机构访谈确认家庭负担',
+      ),
+      requestedNeeds: linkNeedsToMaterials(parseRequestedNeeds(formData), uploadedMaterials),
+      materialNotes: buildMaterialNotes(formData, uploadedMaterials),
+      evidence: buildEvidence(formData, uploadedMaterials),
+      uploadedMaterials: uploadedMaterials.map((material) => material.mediaId),
+      rawNarrative: firstTextField(
+        formData,
+        ['additionalNotes', 'rawNarrative'],
+        '待机构访谈补充原始叙事',
+      ),
       consentForInstitutionReview: formData.has('consentForInstitutionReview'),
       consentForDeidentifiedDisplay: formData.has('consentForDeidentifiedDisplay'),
       status: 'submitted',
@@ -140,20 +167,19 @@ export async function generateCaseReview(
     depth: 0,
     id: applicationId,
   })
-  const report = buildFourDiscernmentReport(payloadAidApplicationToDomain(application))
   const review = await payload.create({
     collection: 'case-reviews',
     data: {
       reviewTitle: `${application.patientAlias} 四辨审核`,
       application: Number(application.id),
-      goodAndHarm: report.goodAndHarm,
-      truth: report.truth,
-      scaleUrgency: report.scaleUrgency,
-      scaleRationale: report.scaleRationale,
-      resourceGap: report.resourceGap,
-      proximity: report.proximity,
-      humanChecklist: report.humanChecklist,
-      reviewSource: 'deterministic',
+      goodAndHarm: [],
+      truth: [],
+      scaleUrgency: 'low',
+      scaleRationale: '',
+      resourceGap: 0,
+      proximity: [],
+      humanChecklist: [],
+      reviewSource: 'manual',
     },
   })
 
@@ -222,7 +248,9 @@ export async function generatePublicProject(
   return { created: true, project }
 }
 
-export function payloadAidApplicationToDomain(application: PayloadAidApplication): DomainAidApplication {
+export function payloadAidApplicationToDomain(
+  application: PayloadAidApplication,
+): DomainAidApplication {
   return {
     id: String(application.id),
     patientAlias: application.patientAlias,
@@ -255,6 +283,15 @@ function optionalTextField(formData: FormData, name: string): string | undefined
   return typeof value === 'string' && value.trim() ? value.trim() : undefined
 }
 
+function firstTextField(formData: FormData, names: string[], fallback: string): string {
+  for (const name of names) {
+    const value = optionalTextField(formData, name)
+    if (value) return value
+  }
+
+  return fallback
+}
+
 function numberField(formData: FormData, name: string): number {
   const value = Number(textField(formData, name, '0'))
   return Number.isFinite(value) && value > 0 ? value : 0
@@ -272,18 +309,50 @@ function splitLines(value: string): string[] {
     .filter(Boolean)
 }
 
+function parseRequestedNeeds(formData: FormData): ResourceNeed[] {
+  const selectedTypes = selectedNeedTypes(formData)
+  if (selectedTypes.length > 0) {
+    return selectedTypes.map(buildNeedFromType)
+  }
+
+  return parseNeeds(textField(formData, 'requestedNeeds', NEED_TYPE_LABELS.treatment_cost))
+}
+
+function selectedNeedTypes(formData: FormData): NeedType[] {
+  const selected = new Set<NeedType>()
+  for (const value of formData.getAll('needTypes')) {
+    if (isNeedType(value)) {
+      selected.add(value)
+    }
+  }
+
+  return Array.from(selected)
+}
+
+function isNeedType(value: FormDataEntryValue): value is NeedType {
+  return typeof value === 'string' && Object.prototype.hasOwnProperty.call(NEED_TYPE_LABELS, value)
+}
+
 function parseNeeds(value: string): ResourceNeed[] {
   return splitLines(value).map((label, index) => {
     const type = inferNeedType(label)
-    return {
-      id: `need-${index + 1}`,
-      type,
-      category: needCategory(type),
-      label,
-      description: `${label}，由机构工作人员复核后匹配资源。`,
-      priority: index === 0 ? 'high' : 'medium',
-    }
+    return buildNeed(type, label, index)
   })
+}
+
+function buildNeedFromType(type: NeedType, index: number): ResourceNeed {
+  return buildNeed(type, NEED_TYPE_LABELS[type], index)
+}
+
+function buildNeed(type: NeedType, label: string, index: number): ResourceNeed {
+  return {
+    id: `need-${index + 1}`,
+    type,
+    category: needCategory(type),
+    label,
+    description: `${label}，由机构工作人员复核后匹配资源。`,
+    priority: index === 0 ? 'high' : 'medium',
+  }
 }
 
 function inferNeedType(label: string): NeedType {
@@ -304,21 +373,125 @@ function needCategory(type: NeedType): HelpCategory {
   return 'services'
 }
 
-function buildEvidence(formData: FormData) {
-  return [
-    {
+function buildMaterialNotes(formData: FormData, uploadedMaterials: UploadedMaterial[]): string[] {
+  const explicitMaterialNotes = optionalTextField(formData, 'materialNotes')
+  const notes = explicitMaterialNotes ? splitLines(explicitMaterialNotes) : []
+  const expensePressure = optionalTextField(formData, 'expensePressure')
+  const additionalNotes = optionalTextField(formData, 'additionalNotes')
+
+  if (expensePressure) {
+    notes.push(`费用压力说明：${expensePressure}`)
+  }
+  if (additionalNotes) {
+    notes.push(`补充说明：${additionalNotes}`)
+  }
+
+  notes.push(...uploadedMaterials.map((material) => `已上传证明材料：${material.filename}`))
+
+  return notes.length > 0 ? notes : ['待补充材料说明']
+}
+
+function linkNeedsToMaterials(
+  needs: ResourceNeed[],
+  uploadedMaterials: UploadedMaterial[],
+): ResourceNeed[] {
+  if (uploadedMaterials.length === 0) return needs
+
+  const filenames = uploadedMaterials.map((material) => material.filename).join('、')
+
+  return needs.map((need) => ({
+    ...need,
+    description: `${need.description} 已随申请上传证明材料：${filenames}。`,
+  }))
+}
+
+function buildEvidence(formData: FormData, uploadedMaterials: UploadedMaterial[]) {
+  const evidence: Array<EvidenceItem & { mediaId?: number }> = []
+  const hasLegacyEvidenceFields =
+    formData.has('evidenceDiagnosis') || formData.has('evidenceLatestInvoice')
+
+  if (hasLegacyEvidenceFields) {
+    evidence.push({
       id: 'evidence-diagnosis',
       label: '诊断摘要',
       status: formData.has('evidenceDiagnosis') ? 'received' : 'missing',
       note: '由申请人勾选提交，需机构复核原始材料。',
-    },
-    {
+    })
+    evidence.push({
       id: 'evidence-latest-invoice',
       label: '最新医疗费用发票',
       status: formData.has('evidenceLatestInvoice') ? 'missing' : 'needs_manual_check',
       note: '费用凭证需由机构工作人员线下核验。',
-    },
-  ]
+    })
+  }
+
+  evidence.push(
+    ...uploadedMaterials.map((material, index) => ({
+      id: `uploaded-material-${index + 1}`,
+      label: `上传材料：${material.filename}`,
+      status: 'received' as const,
+      note: `文件已保存到后台媒体文件 #${material.mediaId}，格式 ${material.mimeType}，需机构复核原始材料。`,
+      mediaId: material.mediaId,
+    })),
+  )
+
+  if (evidence.length === 0) {
+    evidence.push({
+      id: 'evidence-materials',
+      label: '证明材料',
+      status: 'needs_manual_check',
+      note: '前台未上传证明材料，需机构联系申请人补充或线下核验。',
+    })
+  }
+
+  return evidence
+}
+
+async function uploadMaterialFiles(
+  payload: WorkflowPayload,
+  formData: FormData,
+  patientAlias: string,
+): Promise<UploadedMaterial[]> {
+  const files = formData.getAll('materialFiles').filter(isUploadedFile)
+
+  return Promise.all(
+    files.map(async (file) => {
+      const mimeType = file.type || 'application/octet-stream'
+      const media = await payload.create({
+        collection: 'media',
+        data: {
+          alt: `求助材料：${patientAlias} / ${file.name}`,
+        },
+        file: {
+          data: Buffer.from(await file.arrayBuffer()),
+          mimetype: mimeType,
+          name: file.name,
+          size: file.size,
+        },
+      })
+
+      return {
+        filename: file.name,
+        mediaId: Number(media.id),
+        mimeType,
+      }
+    }),
+  )
+}
+
+function isUploadedFile(value: FormDataEntryValue): value is File {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'arrayBuffer' in value &&
+    typeof value.arrayBuffer === 'function' &&
+    'name' in value &&
+    typeof value.name === 'string' &&
+    value.name.length > 0 &&
+    'size' in value &&
+    typeof value.size === 'number' &&
+    value.size > 0
+  )
 }
 
 function relationshipId(value: number | string | { id: number | string }): number {

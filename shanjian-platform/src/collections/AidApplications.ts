@@ -14,7 +14,10 @@ export const AidApplications: CollectionConfig = {
     defaultColumns: ['patientAlias', 'status', 'region', 'remainingGap', 'updatedAt'],
     components: {
       edit: {
-        beforeDocumentControls: ['/components/admin/WorkflowActionButtons#GenerateCaseReviewButton'],
+        beforeDocumentControls: [
+          '/components/admin/WorkflowActionButtons#GenerateCaseReviewButton',
+          '/components/admin/WorkflowActionButtons#RunApplicationCaseReviewAgentButton',
+        ],
       },
     },
   },
@@ -41,9 +44,34 @@ export const AidApplications: CollectionConfig = {
     { name: 'reimbursementEstimate', type: 'number', label: '医保/商保预估', required: true },
     { name: 'remainingGap', type: 'number', label: '费用缺口', required: true },
     { name: 'familyBurden', type: 'textarea', label: '家庭负担说明', required: true },
-    { name: 'requestedNeeds', type: 'json', label: '受助人真实需要', required: true },
-    { name: 'materialNotes', type: 'json', label: '材料说明', required: true },
-    { name: 'evidence', type: 'json', label: '证据材料', required: true },
+    {
+      name: 'aidApplicationReadableSummary',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/admin/ReadableReviewFields#AidApplicationReadableSummary',
+        },
+      },
+    },
+    {
+      type: 'collapsible',
+      label: '原始结构化数据（高级）',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        { name: 'requestedNeeds', type: 'json', label: '受助人真实需要', required: true },
+        { name: 'materialNotes', type: 'json', label: '材料说明', required: true },
+        { name: 'evidence', type: 'json', label: '证据材料', required: true },
+      ],
+    },
+    {
+      name: 'uploadedMaterials',
+      type: 'relationship',
+      label: '上传材料文件',
+      relationTo: 'media',
+      hasMany: true,
+    },
     { name: 'rawNarrative', type: 'textarea', label: '原始叙事', required: true },
     { name: 'consentForInstitutionReview', type: 'checkbox', label: '同意机构复核', defaultValue: false },
     { name: 'consentForDeidentifiedDisplay', type: 'checkbox', label: '同意脱敏展示', defaultValue: false },

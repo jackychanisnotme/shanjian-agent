@@ -17,6 +17,7 @@ const explicitReadTools = new Set([
 
 const explicitWriteTools = new Set([
   'filesystem_write_file',
+  'case_review_generate_suggestions',
   'terminal_run',
   'memory_write',
   'sql_execute_write',

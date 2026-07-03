@@ -6,6 +6,7 @@ import { AidApplications } from '../../src/collections/AidApplications'
 import { CaseReviews } from '../../src/collections/CaseReviews'
 import { DonationIntentions } from '../../src/collections/DonationIntentions'
 import { FeedbackReports } from '../../src/collections/FeedbackReports'
+import { Media } from '../../src/collections/Media'
 import { PublicProjects } from '../../src/collections/PublicProjects'
 import config from '../../src/payload.config'
 
@@ -48,6 +49,20 @@ describe('charity collection configs', () => {
     )
   })
 
+  it('allows Agent 配置 to be saved without model name or temperature overrides', () => {
+    const modelNameField = AgentConfigs.fields.find((field) => 'name' in field && field.name === 'modelName')
+    const temperatureField = AgentConfigs.fields.find((field) => 'name' in field && field.name === 'temperature')
+
+    expect(modelNameField).toMatchObject({
+      name: 'modelName',
+    })
+    expect(modelNameField).not.toMatchObject({ required: true })
+    expect(temperatureField).toMatchObject({
+      name: 'temperature',
+    })
+    expect(temperatureField).not.toMatchObject({ required: true })
+  })
+
   it('limits Agent 配置 access to administrator users', async () => {
     const reviewerArgs = { req: { user: { id: 2, role: 'reviewer' } } }
     const adminArgs = { req: { user: { id: 1, role: 'admin' } } }
@@ -68,6 +83,23 @@ describe('charity collection configs', () => {
     const collectionSlugs = resolvedConfig.collections?.map((collection) => collection.slug)
 
     expect(collectionSlugs).toContain('agent-configs')
+  })
+
+  it('orders backend navigation groups as rescue, resource follow-up, then system management', async () => {
+    const resolvedConfig = await config
+    const collectionSlugs = resolvedConfig.collections?.map((collection) => collection.slug)
+
+    expect(collectionSlugs?.slice(0, 9)).toEqual([
+      'aid-applications',
+      'case-reviews',
+      'public-projects',
+      'donation-intentions',
+      'feedback-reports',
+      'users',
+      'media',
+      'agent-configs',
+      'agent-runtime-logs',
+    ])
   })
 
   it('registers Agent 运行日志 under system management without raw payload columns', async () => {
@@ -98,6 +130,45 @@ describe('charity collection configs', () => {
     expect(publicProjectFields).toContain('isPublished')
   })
 
+  it('mounts readable admin summaries before raw structured review fields', () => {
+    expect(AidApplications.fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'aidApplicationReadableSummary',
+          type: 'ui',
+          admin: expect.objectContaining({
+            components: expect.objectContaining({
+              Field: '/components/admin/ReadableReviewFields#AidApplicationReadableSummary',
+            }),
+          }),
+        }),
+        expect.objectContaining({
+          type: 'collapsible',
+          label: '原始结构化数据（高级）',
+          admin: expect.objectContaining({ initCollapsed: true }),
+        }),
+      ]),
+    )
+    expect(CaseReviews.fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'caseReviewReadableSummary',
+          type: 'ui',
+          admin: expect.objectContaining({
+            components: expect.objectContaining({
+              Field: '/components/admin/ReadableReviewFields#CaseReviewReadableSummary',
+            }),
+          }),
+        }),
+        expect.objectContaining({
+          type: 'collapsible',
+          label: '原始四辨结构（高级）',
+          admin: expect.objectContaining({ initCollapsed: true }),
+        }),
+      ]),
+    )
+  })
+
   it('allows donation intentions to enter a general pool without a project', () => {
     const projectField = DonationIntentions.fields.find((field) => 'name' in field && field.name === 'project')
 
@@ -109,7 +180,15 @@ describe('charity collection configs', () => {
 
   it('requires an institution user before browsers can read or write operational collections', async () => {
     const anonymousArgs = { req: { user: undefined } }
-    const protectedCollections = [AidApplications, CaseReviews, DonationIntentions, FeedbackReports, AgentConfigs, AgentRuntimeLogs]
+    const protectedCollections = [
+      AidApplications,
+      CaseReviews,
+      DonationIntentions,
+      FeedbackReports,
+      Media,
+      AgentConfigs,
+      AgentRuntimeLogs,
+    ]
 
     for (const collection of protectedCollections) {
       await expect(resolveAccess(collection.access?.read?.(anonymousArgs))).resolves.toBe(false)

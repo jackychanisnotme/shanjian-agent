@@ -20,8 +20,8 @@
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    "PingFang SC",
-    "Microsoft YaHei",
+    'PingFang SC',
+    'Microsoft YaHei',
     sans-serif;
   font-size: 14px;
 }
@@ -520,6 +520,56 @@ li {
   resize: vertical;
 }
 
+.intention-form fieldset {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--base-150);
+  border-radius: 3px;
+  padding: 12px;
+}
+
+.intention-form legend {
+  padding: 0 4px;
+  color: var(--base-800);
+  font-weight: 600;
+}
+
+.need-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 14px;
+  margin-top: 8px;
+}
+
+.need-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--base-700);
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.need-options input {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.upload-field {
+  display: grid;
+  gap: 8px;
+  color: var(--base-800);
+  font-weight: 600;
+}
+
+.upload-field p {
+  margin: 0;
+  color: var(--base-500);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
 .check-line {
   display: flex !important;
   grid-template-columns: auto 1fr;
@@ -591,6 +641,10 @@ li {
   .detail-band div + div {
     border-top: 1px solid var(--base-150);
     border-left: 0;
+  }
+
+  .need-options {
+    grid-template-columns: 1fr;
   }
 
   .span-2 {

@@ -45,6 +45,30 @@ describe('Agent runtime integration', () => {
     expect(JSON.stringify(sanitized)).not.toContain('sk-sensitive-runtime-test')
   })
 
+  it('applies server defaults when optional model fields are omitted', async () => {
+    const uniqueName = `测试 Agent 可选模型字段 ${Date.now()}`
+
+    await payload.create({
+      collection: 'agent-configs',
+      data: {
+        configName: uniqueName,
+        isActive: true,
+        provider: 'openai_compatible',
+        baseUrl: 'https://llm.example.test/v1',
+        apiKey: 'sk-sensitive-default-test',
+        maxOutputTokens: 1200,
+        timeoutSeconds: 30,
+        systemPrompt: '只做内部审核辅助。',
+      },
+    })
+
+    const active = await getActiveAgentConfig(payload)
+
+    expect(active?.configName).toBe(uniqueName)
+    expect(active?.modelName).toBe('gpt-4.1-mini')
+    expect(active?.temperature).toBe(0.2)
+  })
+
   it('writes redacted runtime logs after executing a readonly tool', async () => {
     const result = await executeAgentTool({
       payload,

@@ -1,3 +1,4 @@
+import { caseReviewTools } from './tools/caseReviewTools'
 import { filesystemTools } from './tools/filesystemTools'
 import { repositoryTools } from './tools/repositoryTools'
 import { runtimeTools } from './tools/runtimeTools'
@@ -15,7 +16,7 @@ const packDependencies: Record<AgentPackName, AgentPackName[]> = {
 const packTools: Record<AgentPackName, AnyAgentToolDefinition[]> = {
   'base-read-pack': [...runtimeTools, ...filesystemTools, ...terminalTools],
   'repo-pack': repositoryTools,
-  'data-pack': [],
+  'data-pack': caseReviewTools,
   'memory-pack': [],
   'search-pack': [],
 }
@@ -33,7 +34,9 @@ export function expandMountedPacks(packs: AgentPackName[]): AgentPackName[] {
   return Array.from(mounted)
 }
 
-export function getAgentPackTools(packs: AgentPackName[] = ['base-read-pack', 'repo-pack']): AnyAgentToolDefinition[] {
+export function getAgentPackTools(
+  packs: AgentPackName[] = ['base-read-pack', 'repo-pack', 'data-pack'],
+): AnyAgentToolDefinition[] {
   const toolsByName = new Map<string, AnyAgentToolDefinition>()
 
   for (const pack of expandMountedPacks(packs)) {

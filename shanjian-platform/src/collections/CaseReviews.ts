@@ -14,7 +14,10 @@ export const CaseReviews: CollectionConfig = {
     defaultColumns: ['reviewTitle', 'application', 'decision', 'reviewSource', 'updatedAt'],
     components: {
       edit: {
-        beforeDocumentControls: ['/components/admin/WorkflowActionButtons#GeneratePublicProjectButton'],
+        beforeDocumentControls: [
+          '/components/admin/WorkflowActionButtons#RunCaseReviewAgentButton',
+          '/components/admin/WorkflowActionButtons#GeneratePublicProjectButton',
+        ],
       },
     },
   },
@@ -28,8 +31,26 @@ export const CaseReviews: CollectionConfig = {
       relationTo: 'aid-applications',
       required: true,
     },
-    { name: 'goodAndHarm', type: 'json', label: '辨善恶', required: true },
-    { name: 'truth', type: 'json', label: '辨真伪', required: true },
+    {
+      name: 'caseReviewReadableSummary',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/admin/ReadableReviewFields#CaseReviewReadableSummary',
+        },
+      },
+    },
+    {
+      type: 'collapsible',
+      label: '原始四辨结构（高级）',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        { name: 'goodAndHarm', type: 'json', label: '辨善恶', required: true },
+        { name: 'truth', type: 'json', label: '辨真伪', required: true },
+      ],
+    },
     {
       name: 'scaleUrgency',
       type: 'select',
@@ -43,8 +64,17 @@ export const CaseReviews: CollectionConfig = {
     },
     { name: 'scaleRationale', type: 'textarea', label: '辨大小说明', required: true },
     { name: 'resourceGap', type: 'number', label: '资源缺口', required: true },
-    { name: 'proximity', type: 'json', label: '辨远近', required: true },
-    { name: 'humanChecklist', type: 'json', label: '人工复核清单', required: true },
+    {
+      type: 'collapsible',
+      label: '原始流程建议（高级）',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        { name: 'proximity', type: 'json', label: '辨远近', required: true },
+        { name: 'humanChecklist', type: 'json', label: '人工复核清单', required: true },
+      ],
+    },
     {
       name: 'decision',
       type: 'select',
