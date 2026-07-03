@@ -13,5 +13,8 @@ describe('project agent instructions', () => {
     expect(doc).toContain('apiKey')
     expect(doc).toContain('四辨审核')
     expect(doc).toContain('不要自动公开项目')
+    expect(doc).toContain('Agent Runtime')
+    expect(doc).toContain('agent-runtime-logs')
+    expect(doc).toContain('只读终端')
   })
 })

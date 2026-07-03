@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { AgentConfigs } from '../../src/collections/AgentConfigs'
+import { AgentRuntimeLogs } from '../../src/collections/AgentRuntimeLogs'
 import { AidApplications } from '../../src/collections/AidApplications'
 import { CaseReviews } from '../../src/collections/CaseReviews'
 import { DonationIntentions } from '../../src/collections/DonationIntentions'
@@ -14,6 +15,7 @@ describe('charity collection configs', () => {
     expect(PublicProjects.slug).toBe('public-projects')
     expect(DonationIntentions.slug).toBe('donation-intentions')
     expect(AgentConfigs.slug).toBe('agent-configs')
+    expect(AgentRuntimeLogs.slug).toBe('agent-runtime-logs')
   })
 
   it('registers Agent 配置 under system management with LLM connection fields', () => {
@@ -68,6 +70,27 @@ describe('charity collection configs', () => {
     expect(collectionSlugs).toContain('agent-configs')
   })
 
+  it('registers Agent 运行日志 under system management without raw payload columns', async () => {
+    expect(AgentRuntimeLogs.labels).toMatchObject({
+      singular: 'Agent 运行日志',
+      plural: 'Agent 运行日志',
+    })
+    expect(AgentRuntimeLogs.admin).toMatchObject({
+      group: '系统管理',
+      useAsTitle: 'toolName',
+    })
+    expect(AgentRuntimeLogs.admin?.defaultColumns).toEqual(
+      expect.arrayContaining(['toolName', 'safety', 'success', 'durationMs', 'createdAt']),
+    )
+    expect(AgentRuntimeLogs.admin?.defaultColumns).not.toContain('argsPreview')
+    expect(AgentRuntimeLogs.admin?.defaultColumns).not.toContain('resultPreview')
+
+    const resolvedConfig = await config
+    const collectionSlugs = resolvedConfig.collections?.map((collection) => collection.slug)
+
+    expect(collectionSlugs).toContain('agent-runtime-logs')
+  })
+
   it('keeps public project publishing explicit', () => {
     const publicProjectFields = PublicProjects.fields.map((field) => ('name' in field ? field.name : undefined))
 
@@ -86,7 +109,7 @@ describe('charity collection configs', () => {
 
   it('requires an institution user before browsers can read or write operational collections', async () => {
     const anonymousArgs = { req: { user: undefined } }
-    const protectedCollections = [AidApplications, CaseReviews, DonationIntentions, FeedbackReports, AgentConfigs]
+    const protectedCollections = [AidApplications, CaseReviews, DonationIntentions, FeedbackReports, AgentConfigs, AgentRuntimeLogs]
 
     for (const collection of protectedCollections) {
       await expect(resolveAccess(collection.access?.read?.(anonymousArgs))).resolves.toBe(false)

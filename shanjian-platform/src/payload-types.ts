@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     'agent-configs': AgentConfig;
+    'agent-runtime-logs': AgentRuntimeLog;
     'aid-applications': AidApplication;
     'case-reviews': CaseReview;
     'public-projects': PublicProject;
@@ -85,6 +86,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'agent-configs': AgentConfigsSelect<false> | AgentConfigsSelect<true>;
+    'agent-runtime-logs': AgentRuntimeLogsSelect<false> | AgentRuntimeLogsSelect<true>;
     'aid-applications': AidApplicationsSelect<false> | AidApplicationsSelect<true>;
     'case-reviews': CaseReviewsSelect<false> | CaseReviewsSelect<true>;
     'public-projects': PublicProjectsSelect<false> | PublicProjectsSelect<true>;
@@ -205,6 +207,28 @@ export interface AgentConfig {
    * 记录供应商账号、使用范围、测试结论或切换说明，避免填写无关敏感信息。
    */
   notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agent-runtime-logs".
+ */
+export interface AgentRuntimeLog {
+  id: number;
+  toolName: string;
+  safety: 'read' | 'write';
+  success: boolean;
+  durationMs: number;
+  /**
+   * 已脱敏和截断，不存储 API Key、Token、密码等敏感字段。
+   */
+  argsPreview?: string | null;
+  /**
+   * 已脱敏和截断，仅用于审计工具行为。
+   */
+  resultPreview?: string | null;
+  errorMessage?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -458,6 +482,10 @@ export interface PayloadLockedDocument {
         value: number | AgentConfig;
       } | null)
     | ({
+        relationTo: 'agent-runtime-logs';
+        value: number | AgentRuntimeLog;
+      } | null)
+    | ({
         relationTo: 'aid-applications';
         value: number | AidApplication;
       } | null)
@@ -578,6 +606,21 @@ export interface AgentConfigsSelect<T extends boolean = true> {
   timeoutSeconds?: T;
   systemPrompt?: T;
   notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agent-runtime-logs_select".
+ */
+export interface AgentRuntimeLogsSelect<T extends boolean = true> {
+  toolName?: T;
+  safety?: T;
+  success?: T;
+  durationMs?: T;
+  argsPreview?: T;
+  resultPreview?: T;
+  errorMessage?: T;
   updatedAt?: T;
   createdAt?: T;
 }
